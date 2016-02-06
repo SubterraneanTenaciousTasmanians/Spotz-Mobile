@@ -1,0 +1,24 @@
+<ion-view title="Camera">
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+        <div style="text-align:center;">
+          <img ng-src="{{srcImage}}"/>
+         <!-- <img ng-show="flag === false" ng-src="http://placehold.it/300x300"> -->
+        </div>
+        <div class="button-bar">
+            <button class="button" ng-click="takePicture()">Take Picture</button>
+            <button class="button button-stable button-block button-large">send</button>
+            <button class="button button-stable button-block " >{{flag}}</button>
+            <button class="button button-stable button-block ">cancel</button>
+        </div>
+        <div class="list card">
+            <div class="item item-divider">Parking Sign Upload</div>
+            <div class="item item-body">
+                <div>
+                    <p>Location: 2314 Allston Way, Berkeley, 90711</p>
+                </div>
+            </div>
+        </div>
+        <div></div>
+        <form class="list"></form>
+    </ion-content>
+</ion-view>

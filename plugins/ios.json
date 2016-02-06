@@ -1,0 +1,18 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "spotzTGA"
+        }
+    },
+    "dependent_plugins": {}
+}
