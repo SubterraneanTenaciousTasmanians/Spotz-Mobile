@@ -12,7 +12,6 @@ var cookieParser = require('cookie-parser');
 var db = require('./db/db.js');
 var User = require('./db/controllers/user.js');
 var assignTokenSignin = require('./routers/assignTokenSignin.js');
-var assignTokenGoogle = require('./routers/assignTokenGoogle.js');
 var verifyToken = require('./routers/verifyToken');
 
 var port = process.env.PORT || 3000;
