@@ -8,9 +8,13 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('loginCtrl', function($scope) {
-
-})
+.controller('loginCtrl', ['$scope', 'signinFactory', function($scope, signinFactory) {
+    $scope.signin = function(userinfo){
+      signinFactory.signin(userinfo).then(function(response){
+        console.log('HERES THE RESPONSE ', response)
+      });
+    }
+}])
 
 .controller('signupCtrl', function($scope) {
 

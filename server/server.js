@@ -27,8 +27,10 @@ app.use(bodyparser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
+/*DESKTOP VERSION
 app.use(express.static(__dirname + '/../client/'));
-
+*/
+app.use(express.static(__dirname+ '/../www/'))
 /*
  *Subrouters
  */
@@ -37,15 +39,12 @@ app.use(express.static(__dirname + '/../client/'));
 //gets ran through the subrouter first
 // app.use('/api', verifyToken);
 app.use('/auth', assignTokenSignin);
-app.use('/auth/google', assignTokenGoogle);
 
 /**
  * environment file for developing under a local server
  * comment out before deployment
  */
 env(__dirname + '/.env');
-
-
 
 var GOOGLE_CLIENT_ID = process.env.GOOGLECLIENTID;
 var GOOGLE_CLIENT_SECRET = process.env.GOOGLECLIENTSECRET;
@@ -55,10 +54,10 @@ var FACEBOOK_CLIENT_SECRET = process.env.FACEBOOKCLIENTSECRET;
  * Serializing user id to save the user's session
  */
 passport.serializeUser(function (user, done) {
-  if (user.id) {
-    done(null, user.id);
-  } else {
+  if (!user.id) {
     done(null, user);
+  } else {
+    done(null, user.id);
   }
 });
 
@@ -104,12 +103,12 @@ passport.use(new GoogleStrategy({
   passReqToCallback: true,
 }, function (req, accessToken, refreshToken, profile, done) {
   console.log('profile', profile.emails[0].value);
-  User.read({ googleId: profile.emails[0].value }).then(function (user) {
+  return User.read({ googleId: profile.emails[0].value }).then(function (user) {
     console.log('Here is the user', user);
     if (user) {
       return done(null, user);
     } else {
-      User.create({ googleId: profile.emails[0].value }).then(function (model) {
+      User.create({ googleId: profile.emails[0].value }).then(function (user) {
         return done(null, user);
       });
     }
@@ -121,9 +120,22 @@ passport.use(new GoogleStrategy({
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
 app.get('/auth/google/callback',
   passport.authenticate('google', { scope: 'profile email', failureRedirect: '/' }),
-  function (req, res, next) {
-    //req.user has the user id
-  });
+  function (req, res) {
+    console.log('REQUEST DOT USER ', req.user);
+    User.read({ googleId: req.user.attributes.googleId }).then(function (model) {
+      console.log('MR MEESEEKS ', model);
+      if (!model) {
+        res.json({ success: false, message: 'Authentication failed. User not found' });
+      } else if (model) {
+        var token = jwt.sign({ _id: model.attributes.id }, 'SuperSecret', { algorithm: 'HS256', expiresInMinutes: 240 }, function (token) {
+          console.log('Here is the token', token);
+          res.json({ success: true, message: 'Here is your token', token: token });
+        });
+      }
+    });
+  }
+);
+
 /**
  * Redirect to Facebook Signin
  *
@@ -132,9 +144,21 @@ app.get('/auth/google/callback',
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
-  function (req, res, next) {
-    console.log('request user', req.user);
-    res.send(200);
-  });
-console.log('fu pay me')
+  function (req, res) {
+    console.log('REQUEST DOT USER ', req.user);
+    User.read({ facebookId: req.user.attributes.facebookId }).then(function (model) {
+      if (!model) {
+        res.json({ success: false, message: 'Authentication failed. User not found' });
+      } else if (model) {
+        var token = jwt.sign({ _id: model.attributes.id }, 'SuperSecret', { algorithm: 'HS256', expiresInMinutes: 240 }, function (token) {
+          console.log('Here is the token', token);
+          res.json({ success: true, message: 'Here is your token', token: token });
+        });
+      }
+    });
+  }
+);
+
+console.log('fu pay me');
+
 app.listen(port);
