@@ -8,9 +8,13 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('loginCtrl', function($scope) {
-
-})
+.controller('loginCtrl', ['$scope', 'signinFactory', function($scope, signinFactory) {
+    $scope.signin = function(userinfo){
+      signinFactory.signin(userinfo).then(function(response){
+        console.log('HERES THE RESPONSE ', response)
+      });
+    }
+}])
 
 .controller('signupCtrl', function($scope) {
 
@@ -43,8 +47,8 @@ angular.module('app.controllers', [])
     });
   }
   $scope.sendPhoto = function () {
-    // if ($scope.srcImage) {    
-        $http.get('http://spotz-mobile.herokuapp.com/photo').then( function(data){
+    // if ($scope.srcImage) {
+        $http.post('http://spotz-mobile.herokuapp.com/photo', $scope.srcImage).then( function(data){
           console.log(data)
           $scope.test = data;
       })
