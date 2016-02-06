@@ -22,10 +22,17 @@ angular.module('app.services', [])
   //     console.log(err);
   //     // error
   //   });
-  
+
   //   return cameraMethods;
 }])
+.factory('signinFactory', ['$http', function ($http) {
+  var authentication = {};
+  authentication.signin = function (userinfo) {
+    return $http.post('/auth/signin', userinfo);
+  };
 
+  return authentication;
+}])
 .service('BlankService', [function(){
 
 }]);
