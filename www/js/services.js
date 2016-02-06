@@ -1,6 +1,6 @@
 angular.module('app.services', [])
 
-.factory('CameraFuncs', [function(){
+// .factory('CameraFuncs', [function(){
   // cameraMethods = {};
 
   // cameraMethods.takePhoto = function () {
@@ -25,7 +25,7 @@ angular.module('app.services', [])
   //   });
 
   //   return cameraMethods;
-}])
+// }])
 .factory('signinFactory', ['$http', function ($http) {
   var authentication = {};
   authentication.signin = function (userinfo) {
