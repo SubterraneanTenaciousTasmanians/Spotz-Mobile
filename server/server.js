@@ -27,7 +27,7 @@ app.use(bodyparser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
-app.use(express.static(__dirname + '/../client/'));
+app.use(express.static(__dirname + '/../www/'));
 
 /*
  *Subrouters
@@ -119,6 +119,12 @@ passport.use(new GoogleStrategy({
  * Redirect to Google Signin and grab user info
  */
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
+
+app.get('/photo', function(req, res, next){
+  // console.log(req.body);
+  res.status(200).send('req.body');
+});
+
 app.get('/auth/google/callback',
   passport.authenticate('google', { scope: 'profile email', failureRedirect: '/' }),
   function (req, res, next) {
@@ -137,4 +143,4 @@ app.get('/auth/facebook/callback',
     res.send(200);
   });
 console.log('fu pay me')
-app.listen(port);
+app.listen(8100);
