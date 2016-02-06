@@ -136,5 +136,5 @@ app.get('/auth/facebook/callback',
     console.log('request user', req.user);
     res.send(200);
   });
-
+console.log('fu pay me')
 app.listen(port);
