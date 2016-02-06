@@ -120,7 +120,7 @@ app.get('/auth/google', passport.authenticate('google', { scope: 'profile email'
 
 app.post('/photo', function(req, res, next){
   // console.log(req.body);
-  res.status(200).send(req.body);
+  res.status(200).send('this is not a test, OK YEAH IT IS A TEST BUT IT CAME FROM THE ERVER THROUGH THE INTERWEBS');
 });
 
 app.get('/auth/google/callback',
