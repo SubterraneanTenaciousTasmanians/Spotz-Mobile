@@ -1,7 +1,8 @@
 angular.module('app.services', [])
 
-.factory('cameraFactory', [function(){
+.factory('CameraFuncs', [function(){
   cameraMethods = {};
+  
   cameraMethods.takePhoto = function () {
 
   var options = {
@@ -22,9 +23,10 @@ angular.module('app.services', [])
       console.log(err);
       // error
     });
-    return cameraMethods
+}
+
+  return cameraMethods;
 }])
-  cameraMethods = 
 
 .service('BlankService', [function(){
 
