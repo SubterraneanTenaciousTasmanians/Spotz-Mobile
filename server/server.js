@@ -30,7 +30,6 @@ app.use(cookieParser());
 app.use(express.static(__dirname + '/../client/'));
 */
 app.use(express.static(__dirname+ '/../www/'))
-
 /*
  *Subrouters
  */
@@ -119,9 +118,9 @@ passport.use(new GoogleStrategy({
  */
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
 
-app.get('/photo', function(req, res, next){
+app.post('/photo', function(req, res, next){
   // console.log(req.body);
-  res.status(200).send('req.body');
+  res.status(200).send(req.body);
 });
 
 app.get('/auth/google/callback',
@@ -150,7 +149,14 @@ app.get('/auth/google/callback',
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
-
+<<<<<<< HEAD
+  function (req, res, next) {
+    console.log('request user', req.user);
+    res.send(200);
+  });
+console.log('fu pay me')
+app.listen(8100);
+=======
   function (req, res) {
     console.log('REQUEST DOT USER ', req.user);
     User.read({ facebookId: req.user.attributes.facebookId }).then(function (model) {
@@ -169,4 +175,4 @@ app.get('/auth/facebook/callback',
 console.log('fu pay me');
 
 app.listen(port);
-
+>>>>>>> 6e5f0b1915cc944608003c88b4a7d4c0cedd65eb
