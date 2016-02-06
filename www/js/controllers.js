@@ -47,8 +47,8 @@ angular.module('app.controllers', [])
     });
   }
   $scope.sendPhoto = function () {
-    // if ($scope.srcImage) {    
-        $http.get('http://spotz-mobile.herokuapp.com/photo').then( function(data){
+    // if ($scope.srcImage) {
+        $http.post('http://spotz-mobile.herokuapp.com/photo', $scope.srcImage).then( function(data){
           console.log(data)
           $scope.test = data;
       })
