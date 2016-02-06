@@ -26,15 +26,11 @@ app.use(bodyparser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
-<<<<<<< HEAD
-app.use(express.static(__dirname + '/../www/'));
-
-=======
 /*DESKTOP VERSION
 app.use(express.static(__dirname + '/../client/'));
 */
 app.use(express.static(__dirname+ '/../www/'))
->>>>>>> 6e5f0b1915cc944608003c88b4a7d4c0cedd65eb
+
 /*
  *Subrouters
  */
