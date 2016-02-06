@@ -38,14 +38,10 @@ angular.module('app.controllers', [])
   $cordovaCamera.getPicture(options).then(function (imageData) {
       $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
     }, function (err) {
-
-      $scope.flag = 'error';
-
+      console.log(err);
       // error
     });
-
-};
-
+}
 })
 
 .controller('settingCtrl', function($scope) {

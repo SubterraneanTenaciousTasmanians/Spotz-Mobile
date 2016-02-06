@@ -12,6 +12,12 @@
         },
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-device-motion": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "spotzTGA"
         }
     },
     "dependent_plugins": {}
