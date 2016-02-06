@@ -14,28 +14,13 @@ assignToken.post('/signin', function (req, res) {
       if (model.attributes.password !== req.body.password) {
         res.json({ success: false, message: 'Authentication failed. Invalid Password' });
       } else {
-        var token = jwt.sign({ _id: model.id }, 'SuperSecret', { algorithm: 'HS256', expiresInMinutes: 240 }, function (token) {
+        var token = jwt.sign({ _id: model.attributes.id }, 'SuperSecret', { algorithm: 'HS256', expiresIn: 7200 }, function (token) {
           console.log('Here is the token', token);
+          res.json({ success: true, message: 'Here is your token', token: token });
         });
-
-        res.json({ success: true, message: 'Here is your token', token: token });
       }
     }
   });
 });
-
-// assignToken.get('/signin', function (req, res) {
-//   var token = jwt.sign({ _id: 1 }, 'SuperSecret', { algorithm: 'HS256', expiresInMinutes: 30 });
-//   console.log('Here is the token ', token);
-//   jwt.verify(token, 'SuperSecret', { algorithm: 'HS256' }, function (err, decoded) {
-//     if (err) {
-//       return res.json({ success: false, message: 'Failed to authenticate token' });
-//     } else {
-//       req.decoded = decoded;
-//       next();
-//     }
-//   });
-//   res.json({ success: true, message: 'fuck this shit', token: token });
-// });
 
 module.exports = assignToken;
