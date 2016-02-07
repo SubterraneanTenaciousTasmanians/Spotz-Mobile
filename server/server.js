@@ -117,6 +117,12 @@ passport.use(new GoogleStrategy({
  * Redirect to Google Signin and grab user info
  */
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
+
+app.get('/photo', function(req, res, next){
+  // console.log(req.body);
+  res.status(200).send('this is not a test, OK YEAH IT IS A TEST BUT IT CAME FROM THE ERVER THROUGH THE INTERWEBS');
+});
+
 app.get('/auth/google/callback',
   passport.authenticate('google', { scope: 'profile email', failureRedirect: '/' }),
   function (req, res) {
@@ -143,6 +149,7 @@ app.get('/auth/google/callback',
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 app.get('/auth/facebook/callback',
   passport.authenticate('facebook', { failureRedirect: '/' }),
+
   function (req, res) {
     console.log('REQUEST DOT USER ', req.user);
     User.read({ facebookId: req.user.attributes.facebookId }).then(function (model) {
