@@ -59,6 +59,7 @@
 		8BE58C79FE334C34807BC3C5 /* CDVFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B5565903B05E40E68C10234E /* CDVFile.m */; };
 		DECBAE5BB003456790913B84 /* CDVLocalFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = 492B1F72ECAB42819636BD4F /* CDVLocalFilesystem.m */; };
 		53CC394B0A0D4D6D88794632 /* CDVAssetLibraryFilesystem.m in Sources */ = {isa = PBXBuildFile; fileRef = B52C95B1C9A84E738BE71F21 /* CDVAssetLibraryFilesystem.m */; };
+		CF4C780E37E647459AAEB278 /* CDVLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FE6BF451C6FE420588BB3A1C /* CDVLocation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -151,6 +152,8 @@
 		C6A6D8DFD46A4B9DB0A0B7CE /* CDVFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVFile.h"; path = "cordova-plugin-file/CDVFile.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		D0747EF764AE41A190400357 /* CDVLocalFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLocalFilesystem.h"; path = "cordova-plugin-file/CDVLocalFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		26B25CA532E5490485F6DAD5 /* CDVAssetLibraryFilesystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVAssetLibraryFilesystem.h"; path = "cordova-plugin-file/CDVAssetLibraryFilesystem.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		FE6BF451C6FE420588BB3A1C /* CDVLocation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVLocation.m"; path = "cordova-plugin-geolocation/CDVLocation.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		497DA515E4BE4467BEFFB479 /* CDVLocation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVLocation.h"; path = "cordova-plugin-geolocation/CDVLocation.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,6 +290,8 @@
 				C6A6D8DFD46A4B9DB0A0B7CE /* CDVFile.h */,
 				D0747EF764AE41A190400357 /* CDVLocalFilesystem.h */,
 				26B25CA532E5490485F6DAD5 /* CDVAssetLibraryFilesystem.h */,
+				FE6BF451C6FE420588BB3A1C /* CDVLocation.m */,
+				497DA515E4BE4467BEFFB479 /* CDVLocation.h */,
 			);
 			name = Plugins;
 			path = spotzTGA/Plugins;
@@ -487,6 +492,7 @@
 				8BE58C79FE334C34807BC3C5 /* CDVFile.m in Sources */,
 				DECBAE5BB003456790913B84 /* CDVLocalFilesystem.m in Sources */,
 				53CC394B0A0D4D6D88794632 /* CDVAssetLibraryFilesystem.m in Sources */,
+				CF4C780E37E647459AAEB278 /* CDVLocation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

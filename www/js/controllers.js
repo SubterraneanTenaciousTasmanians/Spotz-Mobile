@@ -1,8 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', function($scope) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaGeolocation', '$ionicLoading',
+function($scope, $cordovaGeolocation, $ionicLoading) {
 
-})
+}])
 
 .controller('loginCtrl', ['$scope', 'signinFactory', function($scope, signinFactory) {
     $scope.signin = function(userinfo){
@@ -52,7 +53,7 @@ angular.module('app.controllers', [])
           console.log(data)
           $scope.test = data;
       })
-    }
+    // }
   };
 })
 
