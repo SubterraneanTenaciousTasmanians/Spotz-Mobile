@@ -34,6 +34,14 @@ angular.module('app.services', [])
 
   return authentication;
 }])
+.factory('signupFactory', ['$http', function ($http) {
+  var authentication = {};
+  authentication.signup = function(userinfo) {
+    return $http.post('/auth/signup', userinfo);
+  };
+
+  return authentication;
+}])
 .service('BlankService', [function(){
 
 }]);

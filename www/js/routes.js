@@ -7,9 +7,6 @@ angular.module('app.routes', [])
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-    
-      
-        
     .state('tabsController.map/NearMe', {
       url: '/page2',
       views: {
@@ -19,49 +16,21 @@ angular.module('app.routes', [])
         }
       }
     })
-        
-      
-    
-      
-        
-    .state('mainMenu', {
-      url: '/page4',
-      templateUrl: 'templates/mainMenu.html',
-      controller: 'mainMenuCtrl'
-    })
-        
-      
-    
-      
     .state('tabsController', {
       url: '/page1',
       abstract:true,
       templateUrl: 'templates/tabsController.html'
     })
-      
-    
-      
-        
     .state('login', {
       url: '/page5',
       templateUrl: 'templates/login.html',
       controller: 'loginCtrl'
     })
-        
-      
-    
-      
-        
     .state('signup', {
       url: '/page6',
       templateUrl: 'templates/signup.html',
       controller: 'signupCtrl'
     })
-        
-      
-    
-      
-        
     .state('tabsController.parking', {
       url: '/page10',
       views: {
@@ -71,21 +40,11 @@ angular.module('app.routes', [])
         }
       }
     })
-        
-      
-    
-      
-        
     .state('pHOTOUPLOAD', {
       url: '/page12',
       templateUrl: 'templates/pHOTOUPLOAD.html',
       controller: 'pHOTOUPLOADCtrl'
     })
-        
-      
-    
-      
-        
     .state('tabsController.setting', {
       url: '/page13',
       views: {
@@ -95,11 +54,6 @@ angular.module('app.routes', [])
         }
       }
     })
-        
-      
-    
-      
-        
     .state('tabsController.social', {
       url: '/page14',
       views: {
@@ -108,10 +62,7 @@ angular.module('app.routes', [])
           controller: 'socialCtrl'
         }
       }
-    })
-        
-      
-    ;
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/page1/page2');
