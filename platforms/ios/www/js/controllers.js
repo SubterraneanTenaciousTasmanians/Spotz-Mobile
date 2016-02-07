@@ -53,7 +53,7 @@ angular.module('app.controllers', [])
           $scope.test = data;
       })
     }
-  // };
+  };
 })
 
 .controller('settingCtrl', function($scope) {
