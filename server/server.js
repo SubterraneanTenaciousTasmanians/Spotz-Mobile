@@ -118,8 +118,8 @@ passport.use(new GoogleStrategy({
  */
 app.get('/auth/google', passport.authenticate('google', { scope: 'profile email' }));
 
-app.get('/photo', function(req, res, next){
-  // console.log(req.body);
+app.post('/photo', function(req, res, next){
+  console.log(JSON.parse(req.body));
   res.status(200).send('this is not a test, OK YEAH IT IS A TEST BUT IT CAME FROM THE ERVER THROUGH THE INTERWEBS');
 });
 
