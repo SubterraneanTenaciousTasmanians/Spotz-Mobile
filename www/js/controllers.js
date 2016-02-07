@@ -90,7 +90,7 @@ angular.module('app.controllers', [])
   //   });
   // }
   //NOTE: attempt to refactor the code above
-$scope.imgSrc;
+  $scope.srcImage;
 
   $ionicPlatform.ready(function () {
     var options = {
@@ -105,13 +105,13 @@ $scope.imgSrc;
       saveToPhotoAlbum: true,
     };
 
-    $scope.takePicture = function() {
+    $scope.takePicture = function () {
       $cordovaCamera.getPicture(options).then(function (imageData) {
         //NOTE:Use this if $scope.imgSrc doesnt update properly
         // $scope.$apply(function () {
         //   $scope.imgSrc = "data:image/jpeg;base64," + imageData;
         // });
-        $scope.imgSrc = "data:image/jpeg;base64," + imageData;
+        $scope.srcImage = "data:image/jpeg;base64," + imageData;
       }, function (err) {
         console.log('Error in takePicture function: ', err);
       });
@@ -126,7 +126,7 @@ $scope.imgSrc;
       })
     // }
   };
-})
+}])
 
 .controller('settingCtrl', function($scope) {
 
