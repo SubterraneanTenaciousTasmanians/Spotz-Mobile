@@ -4,10 +4,6 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('mainMenuCtrl', function($scope) {
-
-})
-
 .controller('loginCtrl', ['$scope', 'signinFactory', function($scope, signinFactory) {
     $scope.signin = function(userinfo){
       signinFactory.signin(userinfo).then(function(response){
