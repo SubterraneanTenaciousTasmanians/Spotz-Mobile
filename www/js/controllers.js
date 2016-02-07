@@ -3,7 +3,11 @@ angular.module('app.controllers', [])
 .controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
   //User street input
   $scope.otherStreet = function(){
+    $cordovaKeyboard.hideAccesoryBar(true);
 
+    $cordovaKeyboard.disableScroll(true);
+
+    $
   }
   //Geolocation service
   $ionicPlatform.ready(function () {
@@ -63,9 +67,32 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('pHOTOUPLOADCtrl', function ($http, $scope, $cordovaCamera) {
-  $scope.takePicture = function () {
+.controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
+  // $scope.takePicture = function () {
+  //
+    // var options = {
+    //   quality: 75,
+    //   destinationType: Camera.DestinationType.DATA_URL,
+    //   sourceType: Camera.PictureSourceType.CAMERA,
+    //   allowEdit: true,
+    //   encodingType: Camera.EncodingType.JPEG,
+    //   targetWidth: 300,
+    //   targetHeight: 300,
+    //   popoverOptions: CameraPopoverOptions,
+    //   saveToPhotoAlbum: true,
+    // };
+  //
+  //   $cordovaCamera.getPicture(options).then(function (imageData) {
+  //       $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
+  //     }, function (err) {
+  //       console.log(err);
+  //       // error
+  //   });
+  // }
+  //NOTE: attempt to refactor the code above
+$scope.imgSrc;
 
+  $ionicPlatform.ready(function () {
     var options = {
       quality: 75,
       destinationType: Camera.DestinationType.DATA_URL,
@@ -78,13 +105,19 @@ angular.module('app.controllers', [])
       saveToPhotoAlbum: true,
     };
 
-    $cordovaCamera.getPicture(options).then(function (imageData) {
-        $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
+    $scope.takePicture = function() {
+      $cordovaCamera.getPicture(options).then(function (imageData) {
+        //NOTE:Use this if $scope.imgSrc doesnt update properly
+        // $scope.$apply(function () {
+        //   $scope.imgSrc = "data:image/jpeg;base64," + imageData;
+        // });
+        $scope.imgSrc = "data:image/jpeg;base64," + imageData;
       }, function (err) {
-        console.log(err);
-        // error
-    });
-  }
+        console.log('Error in takePicture function: ', err);
+      });
+    }
+  });
+
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
         $http.post('http://spotz-mobile.herokuapp.com/photo', $scope.srcImage).then( function(data){
