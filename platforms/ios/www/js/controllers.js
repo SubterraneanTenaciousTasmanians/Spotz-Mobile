@@ -24,7 +24,7 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('pHOTOUPLOADCtrl', function($http, $scope, $cordovaCamera) {
+.controller('pHOTOUPLOADCtrl', function($http, $scope, $cordovaCamera, $cordovaFileTransfer) {
   $scope.takePicture = function () {
 
     var options = {
@@ -46,9 +46,22 @@ angular.module('app.controllers', [])
         // error
     });
   }
+
+  $scope.upload = function() {
+    var options = {
+      fileKey: "avatar",
+      fileName: "image.png",
+      chunkedMode: false,
+      mimeType: "image/png"
+    };
+
+    $cordovaFileTransfer.upload("http://spotz-mobile.herokuapp.com/photo", "/img/ionic.png", options)
+
+  }
+
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
-        $http.post('http://spotz-mobile.herokuapp.com/photo', $scope.srcImage).then( function(data){
+        $http.get('http://spotz-mobile.herokuapp.com/photo').then( function(data){
           console.log(data)
           $scope.test = data;
       })
