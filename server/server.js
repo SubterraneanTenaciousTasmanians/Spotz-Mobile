@@ -158,6 +158,19 @@ app.get('/auth/facebook/callback',
   }
 );
 
+app.post('/auth/signup', function(req, res) {
+  console.log('SEND FROM BACKEND ', req.body);
+  User.create(req.body).then(function(model){
+    User.read({ username: req.body.username }).then(function (model) {
+      var token = jwt.sign({ _id: model.attributes.id }, 'SuperSecret', { algorithm: 'HS256', expiresIn: 7200 }, function (token) {
+        console.log('Here is the token', token);
+        res.json({ success: true, message: 'Here is your token', token: token });
+      });
+    });
+  })
+});
+
+
 console.log('fu pay me');
 
 app.listen(port);

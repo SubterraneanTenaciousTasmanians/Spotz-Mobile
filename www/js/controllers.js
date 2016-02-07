@@ -13,12 +13,16 @@ angular.module('app.controllers', [])
       signinFactory.signin(userinfo).then(function(response){
         console.log('HERES THE RESPONSE ', response)
       });
-    }
+    };
 }])
 
-.controller('signupCtrl', function($scope) {
-
-})
+.controller('signupCtrl', ['$scope', 'signupFactory', function($scope, signupFactory) {
+  $scope.signup = function(userinfo) {
+    signupFactory.signup(userinfo).then(function(response){
+      console.log('HERES THE RESPONSE ', response);
+    });
+  };
+}])
 
 .controller('parkingCtrl', function($scope) {
 
