@@ -1,15 +1,47 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', function($scope) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+    $ionicPlatform.ready(function(){
 
-})
+      $ionicLoading.show({
+        template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+      });
+
+      var positionOptions = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      };
+
+      $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+
+        var myLatLng = new google.maps.LatLng(lat, long);
+
+        var mapOptions = {
+          center: myLatLng,
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+        };
+
+        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+        $scope.map = map;
+        $ionicLoading.hide();
+      }, function (err) {
+        $ionicLoading.hide();
+        console.log('error in initializing the map: ', err);
+      });
+    })
+}])
 
 .controller('loginCtrl', ['$scope', 'signinFactory', function($scope, signinFactory) {
-    $scope.signin = function(userinfo){
-      signinFactory.signin(userinfo).then(function(response){
-        console.log('HERES THE RESPONSE ', response)
-      });
-    };
+  $scope.signin = function(userinfo){
+    signinFactory.signin(userinfo).then(function(response){
+      console.log('HERES THE RESPONSE ', response)
+    });
+  };
 }])
 
 .controller('signupCtrl', ['$scope', 'signupFactory', function($scope, signupFactory) {
@@ -52,7 +84,7 @@ angular.module('app.controllers', [])
           console.log(data)
           $scope.test = data;
       })
-    }
+    // }
   };
 })
 
