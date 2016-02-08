@@ -78,7 +78,7 @@ angular.module('app.controllers', [])
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.CAMERA,
     allowEdit: true,
-    encodingType: Camera.EncodingType.JPEG,
+    encodingType: Camera.EncodingType.PNG,
     targetWidth: 300,
     targetHeight: 300,
     popoverOptions: CameraPopoverOptions,
