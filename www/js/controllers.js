@@ -71,56 +71,27 @@ angular.module('app.controllers', [])
 })
 
 .controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
-  // $scope.takePicture = function () {
-  //
-  // var options = {
-  //   quality: 75,
-  //   destinationType: Camera.DestinationType.DATA_URL,
-  //   sourceType: Camera.PictureSourceType.CAMERA,
-  //   allowEdit: true,
-  //   encodingType: Camera.EncodingType.JPEG,
-  //   targetWidth: 300,
-  //   targetHeight: 300,
-  //   popoverOptions: CameraPopoverOptions,
-  //   saveToPhotoAlbum: true,
-  // };
-  //
-  //   $cordovaCamera.getPicture(options).then(function (imageData) {
-  //       $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
-  //     }, function (err) {
-  //       console.log(err);
-  //       // error
-  //   });
-  // }
-  //NOTE: attempt to refactor the code above
-  $scope.srcImage;
+  $scope.takePicture = function () {
 
-  $ionicPlatform.ready(function () {
-    var options = {
-      quality: 75,
-      destinationType: Camera.DestinationType.DATA_URL,
-      sourceType: Camera.PictureSourceType.CAMERA,
-      allowEdit: true,
-      encodingType: Camera.EncodingType.JPEG,
-      targetWidth: 300,
-      targetHeight: 300,
-      popoverOptions: CameraPopoverOptions,
-      saveToPhotoAlbum: true,
-    };
+  var options = {
+    quality: 75,
+    destinationType: Camera.DestinationType.DATA_URL,
+    sourceType: Camera.PictureSourceType.CAMERA,
+    allowEdit: true,
+    encodingType: Camera.EncodingType.JPEG,
+    targetWidth: 300,
+    targetHeight: 300,
+    popoverOptions: CameraPopoverOptions,
+    saveToPhotoAlbum: true,
+  };
 
-    $scope.takePicture = function () {
-      $cordovaCamera.getPicture(options).then(function (imageData) {
-        //NOTE:Use this if $scope.imgSrc doesnt update properly
-        // $scope.$apply(function () {
-        //   $scope.imgSrc = "data:image/jpeg;base64," + imageData;
-        // });
+    $cordovaCamera.getPicture(options).then(function (imageData) {
         $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
       }, function (err) {
-
-        console.log('Error in takePicture function: ', err);
-      });
-    };
-  });
+        console.log(err);
+        // error
+    });
+  }
 
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
