@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http) {
   //User street input
   $scope.otherStreet = function () {
     $cordovaKeyboard.hideAccesoryBar(true);
@@ -50,6 +50,10 @@ angular.module('app.controllers', [])
           position: myLatLng
       });  
     });
+
+    $http.get('http://localhost:3000/zones/' + lat + '/' + lng).then(function(err,data){
+      console.log('POLYGONS BABY', err, data);
+    })
 
     }, function (err) {
 
