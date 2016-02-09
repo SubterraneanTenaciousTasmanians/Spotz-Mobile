@@ -19,15 +19,15 @@ angular.module('app.controllers', [])
     });
 
     var positionOptions = {
-      enableHighAccuracy: true,
+      enableHighAccuracy: false,
       timeout: 10000,
     };
 
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
-      var long = position.coords.longitude;
+      var lng = position.coords.longitude;
 
-      var myLatLng = new google.maps.LatLng(lat, long);
+      var myLatLng = new google.maps.LatLng(lat, lng);
 
       var mapOptions = {
         center: myLatLng,
@@ -39,12 +39,26 @@ angular.module('app.controllers', [])
 
       $scope.map = map;
       $ionicLoading.hide();
+
+      console.log("current position", lat, lng)
+    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
+   
+      var marker = new google.maps.Marker({
+          map: $scope.map,
+          enableHighAccuracy: false,
+          animation: google.maps.Animation.DROP,
+          position: myLatLng
+      });  
+    });
+
     }, function (err) {
 
       $ionicLoading.hide();
       console.log('error in initializing the map: ', err);
     });
   });
+
+ 
 
   //Launch Navigation Service
 }])

@@ -12,64 +12,49 @@ angular.module('app.controllers', [])
   };
 
   //Geolocation service
-  // $ionicPlatform.ready(function () {
-  //
-  //   $ionicLoading.show({
-  //     template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
-  //   });
-  //
-  //   var positionOptions = {
-  //     enableHighAccuracy: true,
-  //     timeout: 10000,
-  //   };
-  //
-  //   $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-  //     var lat = position.coords.latitude;
-  //     var long = position.coords.longitude;
-  //
-  //     var myLatLng = new google.maps.LatLng(lat, long);
-  //
-  //     var mapOptions = {
-  //       center: myLatLng,
-  //       zoom: 15,
-  //       mapTypeId: google.maps.MapTypeId.ROADMAP,
-  //     };
-  //
-  //     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  //
-  //     $scope.map = map;
-  //     $ionicLoading.hide();
-  //   }, function (err) {
-  //
-  //     $ionicLoading.hide();
-  //     console.log('error in initializing the map: ', err);
-  //   });
-  // });
+  $ionicPlatform.ready(function () {
 
-  google.maps.event.addDomListener(window, 'load', function() {
-          var myLatlng = new google.maps.LatLng(37.3000, -120.4833);
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+    });
 
-          var mapOptions = {
-              center: myLatlng,
-              zoom: 16,
-              mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
+    var positionOptions = {
+      enableHighAccuracy: false,
+      timeout: 10000,
+      maximumAge: 0,
+    };
 
-          var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
 
-          navigator.geolocation.getCurrentPosition(function(pos) {
-              map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-              var myLocation = new google.maps.Marker({
-                  position: new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude),
-                  map: map,
-                  title: "My Location"
-              });
-          });
+      var myLatLng = new google.maps.LatLng(lat, lng);
 
-          $scope.map = map;
+      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+      $scope.map = map;
+      $ionicLoading.hide();
+      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+
+        var marker = new google.maps.Marker({
+          map: $scope.map,
+          enableHighAccuracy: false,
+          animation: google.maps.Animation.DROP,
+          position: myLatLng,
+        });
       });
+
+    }, function (err) {
+
+      $ionicLoading.hide();
+      console.log('error in initializing the map: ', err);
+    });
+  });
+
   //Launch Navigation Service
-}])
+},])
 
 .controller('loginCtrl', ['$scope', 'signinFactory', function ($scope, signinFactory) {
   $scope.signin = function (userinfo) {
@@ -77,7 +62,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-}])
+},])
 
 .controller('signupCtrl', ['$scope', 'signupFactory', function ($scope, signupFactory) {
   $scope.signup = function (userinfo) {
@@ -85,7 +70,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-}])
+},])
 
 .controller('parkingCtrl', function ($scope) {
 
@@ -94,7 +79,7 @@ angular.module('app.controllers', [])
 .controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
   $scope.takePicture = function () {
 
-  var options = {
+    var options = {
     quality: 75,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.CAMERA,
@@ -109,10 +94,12 @@ angular.module('app.controllers', [])
     $cordovaCamera.getPicture(options).then(function (imageData) {
         $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
       }, function (err) {
+
         console.log(err);
+
         // error
-    });
-  }
+      });
+  };
 
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
@@ -123,12 +110,12 @@ angular.module('app.controllers', [])
 
     // }
   };
-}])
+},])
 
 .controller('settingCtrl', ['$scope', function ($scope) {
 
-}])
+},])
 
 .controller('socialCtrl', ['$scope', function ($scope) {
 
-}])
+},]);
