@@ -21,7 +21,6 @@ angular.module('app.controllers', [])
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
-      maximumAge: 0,
     };
 
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {

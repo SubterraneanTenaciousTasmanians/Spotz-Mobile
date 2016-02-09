@@ -15,7 +15,7 @@ angular.module('app.controllers', [])
   $ionicPlatform.ready(function () {
 
     $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
     });
 
     var positionOptions = {
@@ -30,25 +30,21 @@ angular.module('app.controllers', [])
 
       var myLatLng = new google.maps.LatLng(lat, lng);
 
-      var mapOptions = {
-        center: myLatLng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-      };
+      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
       var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
       $scope.map = map;
       $ionicLoading.hide();
-    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
-   
-      var marker = new google.maps.Marker({
+      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+
+        var marker = new google.maps.Marker({
           map: $scope.map,
           enableHighAccuracy: false,
           animation: google.maps.Animation.DROP,
-          position: myLatLng
-      });  
-    });
+          position: myLatLng,
+        });
+      });
 
     }, function (err) {
 
@@ -57,10 +53,8 @@ angular.module('app.controllers', [])
     });
   });
 
- 
-
   //Launch Navigation Service
-}])
+},])
 
 .controller('loginCtrl', ['$scope', 'signinFactory', function ($scope, signinFactory) {
   $scope.signin = function (userinfo) {
@@ -68,7 +62,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-}])
+},])
 
 .controller('signupCtrl', ['$scope', 'signupFactory', function ($scope, signupFactory) {
   $scope.signup = function (userinfo) {
@@ -76,7 +70,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-}])
+},])
 
 .controller('parkingCtrl', function ($scope) {
 
@@ -85,7 +79,7 @@ angular.module('app.controllers', [])
 .controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
   $scope.takePicture = function () {
 
-  var options = {
+    var options = {
     quality: 75,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.CAMERA,
@@ -100,10 +94,12 @@ angular.module('app.controllers', [])
     $cordovaCamera.getPicture(options).then(function (imageData) {
         $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
       }, function (err) {
+
         console.log(err);
+
         // error
-    });
-  }
+      });
+  };
 
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
@@ -114,12 +110,12 @@ angular.module('app.controllers', [])
 
     // }
   };
-}])
+},])
 
 .controller('settingCtrl', ['$scope', function ($scope) {
 
-}])
+},])
 
 .controller('socialCtrl', ['$scope', function ($scope) {
 
-}])
+},]);
