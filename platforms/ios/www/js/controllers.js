@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform' '$http', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http) {
   //User street input
   $scope.otherStreet = function () {
     $cordovaKeyboard.hideAccesoryBar(true);
@@ -45,6 +45,9 @@ angular.module('app.controllers', [])
           position: myLatLng,
         });
       });
+      $http.get('/zones/' + lat + "/" + lng).then(function (err,data){
+        console.log('POLYGONS BABY!', err, data)
+      })
 
     }, function (err) {
 
@@ -54,7 +57,7 @@ angular.module('app.controllers', [])
   });
 
   //Launch Navigation Service
-},])
+}, ])
 
 .controller('loginCtrl', ['$scope', 'signinFactory', function ($scope, signinFactory) {
   $scope.signin = function (userinfo) {
@@ -62,7 +65,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-},])
+}, ])
 
 .controller('signupCtrl', ['$scope', 'signupFactory', function ($scope, signupFactory) {
   $scope.signup = function (userinfo) {
@@ -70,7 +73,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-},])
+}, ])
 
 .controller('parkingCtrl', function ($scope) {
 
@@ -110,12 +113,12 @@ angular.module('app.controllers', [])
 
     // }
   };
-},])
+}, ])
 
 .controller('settingCtrl', ['$scope', function ($scope) {
 
-},])
+}, ])
 
 .controller('socialCtrl', ['$scope', function ($scope) {
 
-},]);
+}, ]);
