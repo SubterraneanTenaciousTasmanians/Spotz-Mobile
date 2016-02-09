@@ -40,7 +40,7 @@ app.use('/auth', assignTokenSignin);
 
 app.post('/photo', function (req, res, next) {
   res.status(200).send(req.body);
-});
+})
 
 app.listen(port);
 console.log('server listening on port, :', port);
