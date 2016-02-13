@@ -7,10 +7,13 @@ var jwt = require('jsonwebtoken');
 var cookieParser = require('cookie-parser');
 var passport = require('passport');
 
-var db = require('./db/db.js');
-var User = require('./db/controllers/user.js');
 var assignTokenSignin = require('./routers/assignTokenSignin.js');
 var verifyToken = require('./routers/verifyToken');
+
+//DATA BASE
+var db = require('./db/db.js');
+var User = require('./db/controllers/user.js');
+// var ParkingDB = require('./db/parking.js');
 
 var port = process.env.PORT || 3000;
 
