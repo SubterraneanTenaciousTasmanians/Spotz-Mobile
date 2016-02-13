@@ -6,6 +6,6 @@
     "CoreImage.framework": 1,
     "AudioToolbox.framework": 1,
     "ImageIO.framework": 1,
-    "CoreLocation.framework": 1,
+    "CoreLocation.framework": 2,
     "CoreMotion.framework": 1
 }

@@ -18,6 +18,9 @@
         },
         "cordova-plugin-file": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "spotzTGA"
         }
     },
     "dependent_plugins": {}
