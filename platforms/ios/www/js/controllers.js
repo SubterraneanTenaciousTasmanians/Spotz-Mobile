@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform' '$http', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
   //User street input
   $scope.otherStreet = function () {
     $cordovaKeyboard.hideAccesoryBar(true);
@@ -21,21 +21,31 @@ angular.module('app.controllers', [])
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
-      maximumAge: 0,
     };
 
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
+      MapFactory.init(function (map) {
+        MapFactory.loadColors(function () {
+          MapFactory.fetchParkingZones([lng, lat]);
+        });
+      });
 
-      var myLatLng = new google.maps.LatLng(lat, lng);
-
-      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-      $scope.map = map;
+      // var myLatLng = new google.maps.LatLng(lat, lng);
+      //
+      // var mapOptions = {
+      //   center: myLatLng,
+      //   zoom: 15,
+      //   mapTypeId: google.maps.MapTypeId.ROADMAP,
+      // };
+      //
+      // var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      //
+      // $scope.map = map;
       $ionicLoading.hide();
+
+      console.log('current position', lat, lng);
       google.maps.event.addListenerOnce($scope.map, 'idle', function () {
 
         var marker = new google.maps.Marker({
@@ -45,9 +55,10 @@ angular.module('app.controllers', [])
           position: myLatLng,
         });
       });
-      $http.get('/zones/' + lat + "/" + lng).then(function (err,data){
-        console.log('POLYGONS BABY!', err, data)
-      })
+
+      $http.get('http://spotz.herokuapp.com/zones/' + lat + '/' + lng).then(function (err, data) {
+      console.log('POLYGONS BABY', err, data);
+    });
 
     }, function (err) {
 
@@ -57,15 +68,19 @@ angular.module('app.controllers', [])
   });
 
   //Launch Navigation Service
-}, ])
+},])
 
-.controller('loginCtrl', ['$scope', 'signinFactory', function ($scope, signinFactory) {
+.controller('loginCtrl', ['$scope', 'localStorage', 'signinFactory', function ($scope, $localStorage, signinFactory) {
   $scope.signin = function (userinfo) {
     signinFactory.signin(userinfo).then(function (response) {
       console.log('HERES THE RESPONSE ', response);
+      if (response.data.success) {
+        localStorage.set('credentials', response.data.token);
+        console.log($localStorage.get('credentials'));
+      }
     });
   };
-}, ])
+},])
 
 .controller('signupCtrl', ['$scope', 'signupFactory', function ($scope, signupFactory) {
   $scope.signup = function (userinfo) {
@@ -73,7 +88,7 @@ angular.module('app.controllers', [])
       console.log('HERES THE RESPONSE ', response);
     });
   };
-}, ])
+},])
 
 .controller('parkingCtrl', function ($scope) {
 
@@ -113,12 +128,12 @@ angular.module('app.controllers', [])
 
     // }
   };
-}, ])
+},])
 
 .controller('settingCtrl', ['$scope', function ($scope) {
 
-}, ])
+},])
 
 .controller('socialCtrl', ['$scope', function ($scope) {
 
-}, ]);
+},]);

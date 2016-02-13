@@ -29,20 +29,22 @@ angular.module('app.services', [])
 .factory('signinFactory', ['$http', function ($http) {
   var authentication = {};
   authentication.signin = function (userinfo) {
-    return $http.post('/auth/signin', userinfo);
+    return $http.post('https://spotz.herokuapp.com/auth/signin', userinfo);
   };
 
   return authentication;
-}])
+},
+])
 .factory('signupFactory', ['$http', function ($http) {
   var authentication = {};
-  authentication.signup = function(userinfo) {
-    return $http.post('/auth/signup', userinfo);
+  authentication.signup = function (userinfo) {
+    return $http.post('https://spotz.herokuapp.com/auth/signup', userinfo);
   };
 
   return authentication;
-}])
-.factory('MapFactory', ['$http', '$window', '$timeout', function ($http, $window, $timeout) {
+},
+])
+.factory('MapFactory', ['$http', '$window', '$timeout', '$localStorage', function ($http, $window, $timeout, $localStorage) {
 
   var factory = {};
   var street = [];
@@ -71,10 +73,11 @@ angular.module('app.services', [])
   };
 
   factory.fetchParkingZones = function (coordinates) {
+    console.log('fetch zones', coordinates);
 
     $http({
       method:'GET',
-      url:'http://localhost:8080/zones/' + coordinates[0] + '/' + coordinates[1],
+      url:'https://spotz.herokuapp.com/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + coordinates[2],
     })
     .success(function (data) {
       console.log('got em', data);
@@ -202,7 +205,7 @@ angular.module('app.services', [])
       });
 
       factory.map.addListener('click', function (event) {
-        var coordinates = [event.latLng.lng(), event.latLng.lat()];
+        var coordinates = [event.latLng.lng(), event.latLng.lat(), $localStorage.credentials];
         console.log(coordinates);
         factory.fetchParkingZones(coordinates);
       });
@@ -217,6 +220,8 @@ angular.module('app.services', [])
   return factory;
 },
 ])
-.service('BlankService', [function(){
 
-}]);
+.service('BlankService', [function () {
+
+},
+]);

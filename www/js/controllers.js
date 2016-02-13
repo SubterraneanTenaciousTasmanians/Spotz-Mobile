@@ -1,6 +1,9 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+  //Grab token
+  var token = $localStorage['credentials'];
+
   //User street input
   $scope.otherStreet = function () {
     $cordovaKeyboard.hideAccesoryBar(true);
@@ -11,12 +14,11 @@ angular.module('app.controllers', [])
     var isVisible = $cordovaKeyboard.isVisible();
   };
 
-
   //Geolocation service
   $ionicPlatform.ready(function () {
 
     $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
     });
 
     var positionOptions = {
@@ -28,8 +30,9 @@ angular.module('app.controllers', [])
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       MapFactory.init(function (map) {
+        console.log('get current position', token);
         MapFactory.loadColors(function () {
-          MapFactory.fetchParkingZones([lng, lat]);
+          MapFactory.fetchParkingZones([lng, lat, token]);
         });
       });
 
@@ -46,20 +49,21 @@ angular.module('app.controllers', [])
       // $scope.map = map;
       $ionicLoading.hide();
 
-      console.log("current position", lat, lng)
-    google.maps.event.addListenerOnce($scope.map, 'idle', function(){
+      console.log('current position', lat, lng);
+      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
 
-      var marker = new google.maps.Marker({
+        var marker = new google.maps.Marker({
           map: $scope.map,
           enableHighAccuracy: false,
           animation: google.maps.Animation.DROP,
-          position: myLatLng
+          position: myLatLng,
+        });
       });
-    });
 
-    $http.get('http://localhost:3000/zones/' + lat + '/' + lng).then(function(err,data){
+      console.log('get current position', token);
+      $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
       console.log('POLYGONS BABY', err, data);
-    })
+    });
 
     }, function (err) {
 
@@ -68,26 +72,33 @@ angular.module('app.controllers', [])
     });
   });
 
-
-
   //Launch Navigation Service
-}])
+},
+])
 
-.controller('loginCtrl', ['$scope', 'signinFactory', function ($scope, signinFactory) {
+.controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
   $scope.signin = function (userinfo) {
     signinFactory.signin(userinfo).then(function (response) {
-      console.log('HERES THE RESPONSE ', response);
+      if (response.data.success) {
+        $localStorage.credentials = response.data.token;
+        $state.go('tabsController.map/NearMe');
+      }
     });
   };
-}])
+},
+])
 
-.controller('signupCtrl', ['$scope', 'signupFactory', function ($scope, signupFactory) {
+.controller('signupCtrl', ['$scope', '$localStorage', 'signupFactory', function ($scope, $localStorage, signupFactory) {
   $scope.signup = function (userinfo) {
     signupFactory.signup(userinfo).then(function (response) {
-      console.log('HERES THE RESPONSE ', response);
+      if (response.data.success) {
+        $localStorage.credentials = response.data.token;
+        $state.go('tabsController.map/NearMe');
+      }
     });
   };
-}])
+},
+])
 
 .controller('parkingCtrl', function ($scope) {
 
@@ -96,7 +107,7 @@ angular.module('app.controllers', [])
 .controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
   $scope.takePicture = function () {
 
-  var options = {
+    var options = {
     quality: 75,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.CAMERA,
@@ -111,26 +122,31 @@ angular.module('app.controllers', [])
     $cordovaCamera.getPicture(options).then(function (imageData) {
         $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
       }, function (err) {
+
         console.log(err);
+
         // error
-    });
-  }
+      });
+  };
 
   $scope.sendPhoto = function () {
     // if ($scope.srcImage) {
-    $http.post('http://spotz-mobile.herokuapp.com/photo', $scope.srcImage).then(function (data) {
+    $http.post('https://spotz-mobile.herokuapp.com/api/photo', $scope.srcImage).then(function (data) {
       console.log(data);
       $scope.test = data;
     });
 
     // }
   };
-}])
+},
+])
 
 .controller('settingCtrl', ['$scope', function ($scope) {
 
-}])
+},
+])
 
 .controller('socialCtrl', ['$scope', function ($scope) {
 
-}])
+},
+]);
