@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
   //Grab token
   var token = $localStorage['credentials'];
 
@@ -31,6 +31,10 @@ angular.module('app.controllers', [])
       var lng = position.coords.longitude;
       MapFactory.init(function (map) {
         console.log('get current position', token);
+        if (!token) {
+          $state.go('login');
+        }
+
         MapFactory.loadColors(function () {
           MapFactory.fetchParkingZones([lng, lat, token]);
         });
