@@ -2,6 +2,7 @@
     <ion-content overflow-scroll="true" padding="true" class="has-header">
         <form class="list" ng-submit="signin(user)" ng-model="user">
             <ion-list>
+              <h1>{{message}}</h1>
                 <label class="item item-input">
                     <span class="input-label">Username</span>
                     <input type="text" placeholder="" ng-model="user.username">
@@ -15,7 +16,8 @@
             <button class="button button-stable button-block ">Log in</button>
             <a ui-sref="signup" class="button button-positive button-clear button-block ">Or create an account</a>
         </form>
-          <a href="https://spotz.herokuapp.com/auth/google">GOOGLE</a>
-          <a href="https://spotz.herokuapp.com/auth/facebook">FACEBOOK</a>
+          <button class="button button-stable button-block" on-tap="googleSignin()">GOOGLE</button>
+          <button on-tap="facebookSignin()">FACEBOOK</button>
+          <a href="https://spotz.herokuapp.com/auth/google">GOOGLE ANCHOR</a>
     </ion-content>
 </ion-view>

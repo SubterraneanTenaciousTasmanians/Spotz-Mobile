@@ -32,8 +32,11 @@ angular.module('app.services', [])
     return $http.post('https://spotz.herokuapp.com/auth/signin', userinfo);
   };
 
+  authentication.googleOauth = function () {};
+
   return authentication;
-},])
+},
+])
 .factory('signupFactory', ['$http', function ($http) {
   var authentication = {};
   authentication.signup = function (userinfo) {
@@ -41,8 +44,9 @@ angular.module('app.services', [])
   };
 
   return authentication;
-},])
-.factory('MapFactory', ['$http', '$window', '$timeout', function ($http, $window, $timeout) {
+},
+])
+.factory('MapFactory', ['$http', '$window', '$timeout', '$localStorage', function ($http, $window, $timeout, $localStorage) {
 
   var factory = {};
   var street = [];
@@ -71,10 +75,11 @@ angular.module('app.services', [])
   };
 
   factory.fetchParkingZones = function (coordinates) {
+    console.log('fetch zones', coordinates);
 
     $http({
       method:'GET',
-      url:'http://spotz.herokuapp.com/zones/' + coordinates[0] + '/' + coordinates[1],
+      url:'https://spotz.herokuapp.com/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + coordinates[2],
     })
     .success(function (data) {
       console.log('got em', data);
@@ -202,7 +207,7 @@ angular.module('app.services', [])
       });
 
       factory.map.addListener('click', function (event) {
-        var coordinates = [event.latLng.lng(), event.latLng.lat()];
+        var coordinates = [event.latLng.lng(), event.latLng.lat(), $localStorage.credentials];
         console.log(coordinates);
         factory.fetchParkingZones(coordinates);
       });
@@ -217,19 +222,28 @@ angular.module('app.services', [])
   return factory;
 },
 ])
-.factory('localstorage', ['$window', function ($window) {
-  return {
-    set: function (key, value) {
-      $window.localStorage[key] = value;
-    },
 
-    get: function (key, defaultValue) {
-      return $window.localStorage[key] || defaultValue;
-    },
+.service('SettingsService', ['$http', function ($http) {
+  var factory = {};
+
+  factory.requestToken = function (info) {
+    return $http.post('https://spotz.herokuapp.com/donate', info).then(function (data) {
+        console.log('RESPOSNE FROM SERVER ', data);
+        if (data.status == 'OK') {
+          return { paid: true,
+            message: data.message,
+          };
+        } else {
+          return { paid: false,
+            message: data.message,
+          };
+        }
+
+      }).catch(function (err) {
+        console.error('error', err);
+      });
   };
-},
-])
-.service('BlankService', [function () {
 
+  return factory;
 },
 ]);

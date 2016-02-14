@@ -80,13 +80,40 @@ angular.module('app.controllers', [])
 },
 ])
 
-.controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
+.controller('loginCtrl', ['$cordovaOauth', '$scope', '$localStorage', '$state', 'signinFactory', function ($cordovaOauth, $scope, $localStorage, $state, signinFactory) {
   $scope.signin = function (userinfo) {
     signinFactory.signin(userinfo).then(function (response) {
       if (response.data.success) {
         $localStorage.credentials = response.data.token;
         $state.go('tabsController.map/NearMe');
       }
+    });
+  };
+
+  $scope.message = 'Nothing yet';
+  $scope.googleSignin = function () {
+    $cordovaOauth.google('213370251589-kscceknoocdc5qguj50d5vk9g7im4105.apps.googleusercontent.com', ['profile email'], { redirect_uri: 'http://localhost/callback' }).then(function (response) {
+      console.log('REPONSE FROM GOOGLE', response);
+      $localStorage.accessToken = response.access_token;
+      $scope.$apply(function () {
+        $scope.message = response;
+      });
+
+    }, function (err) {
+
+      $scope.message = err;
+
+      console.log('ERROR ', err);
+    });
+  };
+
+  $scope.facebookSignin = function () {
+    $cordovaOauth.facebook('683872398419305').then(function (response) {
+      console.log('RESPONSE FROM FACEBOOK', reponse);
+      $localStorage.accessToken = response.access_token;
+    }, function (err) {
+
+      console.log('ERROR ', err);
     });
   };
 },

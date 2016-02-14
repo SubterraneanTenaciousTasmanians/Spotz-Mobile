@@ -32,6 +32,8 @@ angular.module('app.services', [])
     return $http.post('https://spotz.herokuapp.com/auth/signin', userinfo);
   };
 
+  authentication.googleOauth = function () {};
+
   return authentication;
 },
 ])
