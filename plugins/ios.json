@@ -21,6 +21,9 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "spotzTGA"
         }
     },
     "dependent_plugins": {}

@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
   //Grab token
   var token = $localStorage['credentials'];
 
@@ -31,6 +31,10 @@ angular.module('app.controllers', [])
       var lng = position.coords.longitude;
       MapFactory.init(function (map) {
         console.log('get current position', token);
+        if (!token) {
+          $state.go('login');
+        }
+
         MapFactory.loadColors(function () {
           MapFactory.fetchParkingZones([lng, lat, token]);
         });
@@ -76,13 +80,40 @@ angular.module('app.controllers', [])
 },
 ])
 
-.controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
+.controller('loginCtrl', ['$cordovaOauth', '$scope', '$localStorage', '$state', 'signinFactory', function ($cordovaOauth, $scope, $localStorage, $state, signinFactory) {
   $scope.signin = function (userinfo) {
     signinFactory.signin(userinfo).then(function (response) {
       if (response.data.success) {
         $localStorage.credentials = response.data.token;
         $state.go('tabsController.map/NearMe');
       }
+    });
+  };
+
+  $scope.message = 'Nothing yet';
+  $scope.googleSignin = function () {
+    $cordovaOauth.google('213370251589-kscceknoocdc5qguj50d5vk9g7im4105.apps.googleusercontent.com', ['profile email'], { redirect_uri: 'http://localhost/callback' }).then(function (response) {
+      console.log('REPONSE FROM GOOGLE', response);
+      $localStorage.accessToken = response.access_token;
+      $scope.$apply(function () {
+        $scope.message = response;
+      });
+
+    }, function (err) {
+
+      $scope.message = err;
+
+      console.log('ERROR ', err);
+    });
+  };
+
+  $scope.facebookSignin = function () {
+    $cordovaOauth.facebook('683872398419305').then(function (response) {
+      console.log('RESPONSE FROM FACEBOOK', reponse);
+      $localStorage.accessToken = response.access_token;
+    }, function (err) {
+
+      console.log('ERROR ', err);
     });
   };
 },
@@ -141,8 +172,58 @@ angular.module('app.controllers', [])
 },
 ])
 
-.controller('settingCtrl', ['$scope', function ($scope) {
+.controller('settingCtrl', ['$state', '$scope', '$localStorage', 'SettingsService', function ($state, $scope, $localStorage, SettingsService) {
+  $scope.showForm = false;
 
+  $scope.toggleForm = function () {
+    $scope.showForm = !$scope.showForm;
+  };
+
+  $scope.logout = function () {
+    delete $localStorage.credentials;
+    $state.go('login');
+  };
+
+  $scope.info = {};
+  $scope.transaction = {};
+  $scope.amount = 0;
+  $scope.message;
+  $scope.paid = false;
+  $scope.modalShown = false;
+  $scope.toggleModal = function () {
+  console.log('toggle modal');
+  $scope.modalShown = !$scope.modalShown;
+};
+
+  $scope.stripeCallback = function (status, response) {
+  console.log('2nd STRIPE RESPONSE', response);
+  if (response.error) {
+    // there was an error. Fix it.
+    console.log('ERROR', response.error);
+  } else {
+    console.log('AMOUNT', $scope.amount);
+    $scope.transaction = {
+      token: response.id,
+      amount: $scope.amount,
+    };
+    SettingsService.requestToken($scope.transaction).then(function (response) {
+      console.log('RESPOSNE FROM FACTORY ', response);
+      $scope.paid = response.paid;
+      $scope.message = response.message;
+    });
+  }
+};
+
+  // nothing yet
+  $scope.handleStripe = function (status, response) {
+  console.log('MONEY', $scope.amount);
+  console.log('THIS ', $scope.info);
+  console.log('STATUSCODE ', status);
+  var clientToken = Stripe.card.createToken($scope.info, $scope.stripeCallback);
+  console.log('clientToken ', clientToken);
+  console.log('1st STRIPE RESPONSE', response);
+  console.log('PAID??? ', $scope.paid);
+};
 },
 ])
 
