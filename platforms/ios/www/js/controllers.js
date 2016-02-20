@@ -136,12 +136,13 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$ionicPopup', '$scope', '$cordovaCamera', '$cordovaFileTransfer', '$ionicPlatform', function ($http, $timeout, $ionicPopup, $scope, $cordovaCamera, $cordovaFileTransfer, $ionicPlatform) {
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
+  $scope.test2 = 'body';
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,
@@ -197,23 +198,57 @@ angular.module('app.controllers', [])
   };
 
   $scope.sendPhoto = function () {
-    $http.post('https://spotz.herokuapp.com/api/photo', { data: $scope.imageSrc }).then(function success(data) {
-      $scope.test = data;
-      $scope.takePhoto = false;
-    }, function error(err) {
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+    });
+    var positionOptions = {
+      enableHighAccuracy: false,
+      timeout: 10000,
+    };
+    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+      $ionicLoading.hide();
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+      var coordinates = JSON.stringify([lat, lng]);
+      $scope.$apply(function () {
+        $scope.test2 = coordinates;
+      });
 
-      $scope.test = err;
+      $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
+        $scope.test = data;
+        $scope.takePhoto = false;
+        $ionicLoading.show({
+          template: '<div class="ion-ios-checkmark"></div><br/>Thank you!',
+        });
+        $timeout(function () {
+          $ionicLoading.hide();
+          $state.go('tabsController.parking');
+        }, 1500);
+      }, function error(err) {
+
+        $ionicLoading.hide();
+        $scope.test = err;
+      });
     });
   };
 
   $scope.ocrad = function () {
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analyzing!',
+    });
     OCRAD(document.getElementById('picture'), function (text) {
       var regexed = text.replace(/[^a-zA-Z0-9:\s]/g, '');
+      regexed = regexed.replace(/(\r\n|\n|\r)/g, ' ');
       regexed = regexed.replace(/s:/g, '5:');
       regexed = regexed.replace(/PARKC/g, 'PARKING');
       regexed = regexed.replace(/PARKIN/g, 'PARKING');
+      regexed = regexed.replace(/PARING/g, 'PARKING');
       regexed = regexed.replace(/PARKINGC/g, 'PARKING');
       regexed = regexed.replace(/PARKINGG/g, 'PARKING');
+      regexed = regexed.replace(/PARWINC/g, 'PARKING');
+      regexed = regexed.replace(/PARWING/g, 'PARKING');
+      regexed = regexed.replace(/PARXING/g, 'PARKING');
+      regexed = regexed.replace(/INC/g, 'ING');
       regexed = regexed.replace(/:3o/g, ':30');
       regexed = regexed.replace(/:0o/g, ':00');
       regexed = regexed.replace(/:oo/g, ':00');
@@ -224,8 +259,11 @@ angular.module('app.controllers', [])
         $scope.analyzed = true;
         $scope.imageSrc = regexed;
       });
+
+      $ionicLoading.hide();
     }, function (err) {
 
+      $ionicLoading.hide();
       $scope.imageSrc = 'err' + err;
     });
   };
