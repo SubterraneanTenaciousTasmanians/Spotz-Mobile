@@ -13,6 +13,7 @@ var verifyToken = require('./routers/verifyToken');
 //DATA BASE
 var db = require('./db/db.js');
 var User = require('./db/controllers/user.js');
+
 // var ParkingDB = require('./db/parking.js');
 
 var port = process.env.PORT || 3000;
@@ -66,6 +67,12 @@ app.post('/zones', function (req, res) {
 
 app.post('/photo', function (req, res, next) {
   res.status(200).send(req.body);
+});
+
+app.post('/parkingSpot', function (req, res, next) {
+  db.newSpot(req.body).then(function (data) {
+    res.status(201).send(data);
+  });
 });
 
 app.listen(port);
