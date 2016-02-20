@@ -263,6 +263,30 @@ module.exports = [
             "cordova.InAppBrowser.open",
             "window.open"
         ]
+    },
+    {
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransferError.js",
+        "id": "cordova-plugin-file-transfer.FileTransferError",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransferError"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-file-transfer/www/FileTransfer.js",
+        "id": "cordova-plugin-file-transfer.FileTransfer",
+        "pluginId": "cordova-plugin-file-transfer",
+        "clobbers": [
+            "window.FileTransfer"
+        ]
+    },
+    {
+        "file": "plugins/com.synconset.imagepicker/www/imagepicker.js",
+        "id": "com.synconset.imagepicker.ImagePicker",
+        "pluginId": "com.synconset.imagepicker",
+        "clobbers": [
+            "plugins.imagePicker"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -273,7 +297,9 @@ module.exports.metadata =
     "cordova-plugin-device-motion": "1.2.0",
     "cordova-plugin-file": "4.1.0",
     "cordova-plugin-geolocation": "2.1.0",
-    "cordova-plugin-inappbrowser": "1.3.1-dev"
+    "cordova-plugin-inappbrowser": "1.3.1-dev",
+    "cordova-plugin-file-transfer": "1.5.0",
+    "com.synconset.imagepicker": "1.0.7"
 }
 // BOTTOM OF METADATA
 });
