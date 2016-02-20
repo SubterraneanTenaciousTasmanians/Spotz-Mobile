@@ -26,10 +26,39 @@ angular.module('app.services', [])
 
   //   return cameraMethods;
 // }])
-.factory('signinFactory', ['$http', function ($http) {
+.factory('signinFactory', ['$http', '$cordovaOauth', function ($http, $cordovaOauth) {
   var authentication = {};
   authentication.signin = function (userinfo) {
-    return $http.post('https://spotz.herokuapp.com/auth/signin', userinfo);
+    return $http.post('https://spotz.herokuapp.com/auth/signin', userinfo).then(function success(response) {
+      return response;
+    }, function error(err) {
+
+      return 'Invalid Credentials';
+    });
+  };
+
+  authentication.googleOauth = function () {
+    return $cordovaOauth.google('213370251589-kscceknoocdc5qguj50d5vk9g7im4105.apps.googleusercontent.com',
+    ['profile email'], { redirect_uri: 'http://localhost/callback' })
+    .then(function success(response) {
+      return $http.get('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + response.access_token)
+      .then(function (res) {
+        return $http.post('https://spotz.herokuapp.com/auth/googleOauth', { id: res.data.email });
+      });
+    });
+  };
+
+  authentication.facebookOauth = function () {
+    return $cordovaOauth.facebook('683872398419305', ['email', 'public_profile'], { redirect_uri: 'http://localhost/callback' })
+    .then(function success(response) {
+      return $http.get('https://graph.facebook.com/me?access_token=' + response.access_token)
+      .then(function (res) {
+        return $http.post('https://spotz.herokuapp.com/auth/facebookOauth', { id: res.data.id });
+      });
+    }, function error(err) {
+
+      return err;
+    });
   };
 
   return authentication;
@@ -38,13 +67,19 @@ angular.module('app.services', [])
 .factory('signupFactory', ['$http', function ($http) {
   var authentication = {};
   authentication.signup = function (userinfo) {
-    return $http.post('https://spotz.herokuapp.com/auth/signup', userinfo);
+    return $http.post('https://spotz.herokuapp.com/auth/signup', userinfo).then(function success(response) {
+      return response;
+    }, function error(err) {
+
+      console.log('err', err);
+      return err;
+    });
   };
 
   return authentication;
 },
 ])
-.factory('MapFactory', ['$http', '$window', '$timeout', '$localStorage', function ($http, $window, $timeout, $localStorage) {
+.factory('MapFactory', ['$http', '$window', '$timeout', '$localStorage', '$ionicLoading', function ($http, $window, $timeout, $localStorage, $ionicLoading) {
 
   var factory = {};
   var street = [];
@@ -74,12 +109,15 @@ angular.module('app.services', [])
 
   factory.fetchParkingZones = function (coordinates) {
     console.log('fetch zones', coordinates);
-
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+    });
     $http({
       method:'GET',
       url:'https://spotz.herokuapp.com/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + coordinates[2],
     })
     .success(function (data) {
+      $ionicLoading.hide();
       console.log('got em', data);
 
       data.forEach(function (poly) {
@@ -130,6 +168,9 @@ angular.module('app.services', [])
         infowindow.open(factory.map);
       });
 
+    }).catch(function (err) {
+      console.log('error in fetching', err);
+      $ionicLoading.hide();
     });
   };
 
@@ -221,7 +262,27 @@ angular.module('app.services', [])
 },
 ])
 
-.service('BlankService', [function () {
+.service('SettingsService', ['$http', function ($http) {
+  var factory = {};
 
+  factory.requestToken = function (info) {
+    return $http.post('https://spotz.herokuapp.com/donate', info).then(function (data) {
+        console.log('RESPOSNE FROM SERVER ', data);
+        if (data.status == 'OK') {
+          return { paid: true,
+            message: data.message,
+          };
+        } else {
+          return { paid: false,
+            message: data.message,
+          };
+        }
+
+      }).catch(function (err) {
+        console.error('error', err);
+      });
+  };
+
+  return factory;
 },
 ]);

@@ -1,6 +1,9 @@
 angular.module('app.directives', [])
 
-.directive('blankDirective', [function(){
-
-}]);
-
+.directive('donateForm', function () {
+  return {
+    restrict: 'E',
+    transclude: true,
+    templateUrl: 'templates/donation.html',
+  };
+});

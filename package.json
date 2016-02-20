@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/BugsBananaSlugs/Spotz#readme",
   "dependencies": {
+    "angular-payments": "^1.0.7",
     "body-parser": "^1.14.2",
     "bookshelf": "^0.9.1",
     "cookie-parser": "^1.4.1",
@@ -33,12 +34,14 @@
     "knex": "^0.9.0",
     "morgan": "^1.6.1",
     "mysql": "^2.10.2",
+    "ng-file-upload": "^12.0.1",
     "node-env-file": "^0.1.8",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.0",
     "passport-google-oauth": "^0.2.0",
     "path": "^0.12.7",
-    "sequelize": "^3.19.1"
+    "sequelize": "^3.19.1",
+    "tesseract_native": "^0.5.2"
   },
   "devDependencies": {
     "gulp": "^3.9.0",

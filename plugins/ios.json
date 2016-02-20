@@ -21,6 +21,15 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "com.synconset.imagepicker": {
+            "PACKAGE_NAME": "spotzTGA"
         }
     },
     "dependent_plugins": {}

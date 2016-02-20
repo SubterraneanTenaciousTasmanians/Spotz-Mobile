@@ -6,11 +6,6 @@
   },
   "dependencies": {
     "ngCordova": "^0.1.24-alpha",
-    "angular-moment": "^0.10.3",
-    "moment": "^2.11.2",
-    "angular-duration-filter-formatter": "^1.0.1"
-  },
-  "resolutions": {
-    "moment": ">=2.8.0 <2.11.0"
+    "ng-file-upload": "~12.0.1"
   }
 }
