@@ -34,6 +34,12 @@
     <feature name="InAppBrowser">
         <param name="ios-package" value="CDVInAppBrowser" />
     </feature>
+    <feature name="FileTransfer">
+        <param name="ios-package" value="CDVFileTransfer" />
+    </feature>
+    <feature name="ImagePicker">
+        <param name="ios-package" value="SOSPicker" />
+    </feature>
     <name>spotzTGA</name>
     <description>
         An Ionic Framework and Cordova project.

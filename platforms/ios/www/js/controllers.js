@@ -80,51 +80,52 @@ angular.module('app.controllers', [])
 },
 ])
 
-.controller('loginCtrl', ['$cordovaOauth', '$scope', '$localStorage', '$state', 'signinFactory', function ($cordovaOauth, $scope, $localStorage, $state, signinFactory) {
+.controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
+  $scope.message = '';
+  $scope.checkCredentials = function () {
+    if ($localStorage.credentials) {
+      $state.go('tabsController.map/NearMe');
+    }
+  };
+
   $scope.signin = function (userinfo) {
     signinFactory.signin(userinfo).then(function (response) {
-      if (response.data.success) {
+      if (response.status === 200) {
         $localStorage.credentials = response.data.token;
         $state.go('tabsController.map/NearMe');
+      } else {
+        $scope.message = response;
       }
     });
   };
 
-  $scope.message = 'Nothing yet';
   $scope.googleSignin = function () {
-    $cordovaOauth.google('213370251589-kscceknoocdc5qguj50d5vk9g7im4105.apps.googleusercontent.com', ['profile email'], { redirect_uri: 'http://localhost/callback' }).then(function (response) {
-      console.log('REPONSE FROM GOOGLE', response);
-      $localStorage.accessToken = response.access_token;
-      $scope.$apply(function () {
-        $scope.message = response;
-      });
-
-    }, function (err) {
-
-      $scope.message = err;
-
-      console.log('ERROR ', err);
+    signinFactory.googleOauth().then(function (response) {
+      $localStorage.credentials = response.data;
+      $state.go('tabsController.map/NearMe');
     });
   };
 
   $scope.facebookSignin = function () {
-    $cordovaOauth.facebook('683872398419305').then(function (response) {
-      console.log('RESPONSE FROM FACEBOOK', reponse);
-      $localStorage.accessToken = response.access_token;
-    }, function (err) {
-
-      console.log('ERROR ', err);
+    signinFactory.facebookOauth().then(function (response) {
+      $localStorage.credentials = response.data;
+      $state.go('tabsController.map/NearMe');
     });
   };
+
+  $scope.checkCredentials();
 },
 ])
 
-.controller('signupCtrl', ['$scope', '$localStorage', 'signupFactory', function ($scope, $localStorage, signupFactory) {
+.controller('signupCtrl', ['$scope', '$state', '$localStorage', 'signupFactory', function ($scope, $state, $localStorage, signupFactory) {
+  $scope.message = '';
   $scope.signup = function (userinfo) {
     signupFactory.signup(userinfo).then(function (response) {
-      if (response.data.success) {
+      if (response.status === 201) {
         $localStorage.credentials = response.data.token;
         $state.go('tabsController.map/NearMe');
+      } else {
+        $scope.message = response.data.message;
       }
     });
   };
@@ -135,11 +136,43 @@ angular.module('app.controllers', [])
 
 })
 
-.controller('pHOTOUPLOADCtrl', ['$http', '$scope', '$cordovaCamera', '$ionicPlatform', function ($http, $scope, $cordovaCamera, $ionicPlatform) {
-  $scope.takePicture = function () {
-
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
+  $scope.takePhoto = true;
+  $scope.srcImage = 'assets/noImage.png';
+  $scope.imageSrc = '';
+  $scope.analyzed = false;
+  $scope.useOcrad = false;
+  $scope.test2 = 'body';
+  $scope.choosePhoto = function () {
     var options = {
-    quality: 75,
+    quality: 100,
+    destinationType: Camera.DestinationType.DATA_URL,
+    sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+    allowEdit: true,
+    encodingType: Camera.EncodingType.PNG,
+    targetWidth: 300,
+    targetHeight: 300,
+    popoverOptions: CameraPopoverOptions,
+    saveToPhotoAlbum: true,
+    correctOrientation: true,
+  };
+
+    $cordovaCamera.getPicture(options).then(function (data) {
+      $scope.takePhoto = false;
+      $scope.useOcrad = true;
+      $scope.srcImage = 'data:image/png;base64,' + data;
+    }, function (err) {
+
+      $scope.srcImage = 'assets/noImage.png';
+      console.log(err);
+
+      // error
+    });
+  };
+
+  $scope.takePicture = function () {
+    var options = {
+    quality: 100,
     destinationType: Camera.DestinationType.DATA_URL,
     sourceType: Camera.PictureSourceType.CAMERA,
     allowEdit: true,
@@ -148,26 +181,98 @@ angular.module('app.controllers', [])
     targetHeight: 300,
     popoverOptions: CameraPopoverOptions,
     saveToPhotoAlbum: true,
+    correctOrientation: true,
   };
 
-    $cordovaCamera.getPicture(options).then(function (imageData) {
-        $scope.srcImage = 'data:image/jpeg;base64,' + imageData;
-      }, function (err) {
+    $cordovaCamera.getPicture(options).then(function (data) {
+      $scope.takePhoto = false;
+      $scope.useOcrad = true;
+      $scope.srcImage = 'data:image/png;base64,' + data;
+    }, function (err) {
 
-        console.log(err);
+      $scope.srcImage = 'assets/noImage.png';
+      console.log(err);
 
-        // error
-      });
+      // error
+    });
   };
 
   $scope.sendPhoto = function () {
-    // if ($scope.srcImage) {
-    $http.post('https://spotz-mobile.herokuapp.com/api/photo', $scope.srcImage).then(function (data) {
-      console.log(data);
-      $scope.test = data;
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
     });
+    var positionOptions = {
+      enableHighAccuracy: false,
+      timeout: 10000,
+    };
+    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+      $ionicLoading.hide();
+      var lat = position.coords.latitude;
+      var lng = position.coords.longitude;
+      var coordinates = JSON.stringify([lat, lng]);
+      $scope.$apply(function () {
+        $scope.test2 = coordinates;
+      });
 
-    // }
+      $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
+        $scope.test = data;
+        $scope.takePhoto = false;
+        $ionicLoading.show({
+          template: '<div class="ion-ios-checkmark"></div><br/>Thank you!',
+        });
+        $timeout(function () {
+          $ionicLoading.hide();
+          $state.go('tabsController.parking');
+        }, 1500);
+      }, function error(err) {
+
+        $ionicLoading.hide();
+        $scope.test = err;
+      });
+    });
+  };
+
+  $scope.ocrad = function () {
+    $ionicLoading.show({
+      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analyzing!',
+    });
+    OCRAD(document.getElementById('picture'), function (text) {
+      var regexed = text.replace(/[^a-zA-Z0-9:\s]/g, '');
+      regexed = regexed.replace(/(\r\n|\n|\r)/g, ' ');
+      regexed = regexed.replace(/s:/g, '5:');
+      regexed = regexed.replace(/PARKC/g, 'PARKING');
+      regexed = regexed.replace(/PARKIN/g, 'PARKING');
+      regexed = regexed.replace(/PARING/g, 'PARKING');
+      regexed = regexed.replace(/PARKINGC/g, 'PARKING');
+      regexed = regexed.replace(/PARKINGG/g, 'PARKING');
+      regexed = regexed.replace(/PARWINC/g, 'PARKING');
+      regexed = regexed.replace(/PARWING/g, 'PARKING');
+      regexed = regexed.replace(/PARXING/g, 'PARKING');
+      regexed = regexed.replace(/INC/g, 'ING');
+      regexed = regexed.replace(/:3o/g, ':30');
+      regexed = regexed.replace(/:0o/g, ':00');
+      regexed = regexed.replace(/:oo/g, ':00');
+      regexed = regexed.replace(/:o/g, ':00');
+      regexed = regexed.replace(/e:/, '5:');
+      $scope.$apply(function () {
+        $scope.useOcrad = false;
+        $scope.analyzed = true;
+        $scope.imageSrc = regexed;
+      });
+
+      $ionicLoading.hide();
+    }, function (err) {
+
+      $ionicLoading.hide();
+      $scope.imageSrc = 'err' + err;
+    });
+  };
+
+  $scope.cancel = function () {
+    $scope.srcImage = 'assets/noImage.png';
+    $scope.takePhoto = true;
+    $scope.analyzed = false;
+    $scope.imageSrc = '';
   };
 },
 ])

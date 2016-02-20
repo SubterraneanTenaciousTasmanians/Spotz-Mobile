@@ -97,5 +97,22 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova-plugin-file-transfer": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-file-transfer@~1.5.0"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "com.synconset.imagepicker": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/wymsee/cordova-imagePicker.git",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }
