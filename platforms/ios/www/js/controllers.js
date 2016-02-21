@@ -6,6 +6,10 @@ angular.module('app.controllers', [])
 
   //User street input
   $scope.otherStreet = function () {
+    if (!token) {
+      $state.go('login');
+    }
+
     $cordovaKeyboard.hideAccesoryBar(true);
 
     $cordovaKeyboard.disableScroll(true);
@@ -108,6 +112,10 @@ angular.module('app.controllers', [])
 
   $scope.facebookSignin = function () {
     signinFactory.facebookOauth().then(function (response) {
+      if (response.status === 409) {
+        $state.go('login');
+      }
+
       $localStorage.credentials = response.data;
       $state.go('tabsController.map/NearMe');
     });
@@ -142,7 +150,6 @@ angular.module('app.controllers', [])
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
-  $scope.test2 = 'body';
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,
@@ -210,9 +217,6 @@ angular.module('app.controllers', [])
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       var coordinates = JSON.stringify([lat, lng]);
-      $scope.$apply(function () {
-        $scope.test2 = coordinates;
-      });
 
       $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
         $scope.test = data;
@@ -227,7 +231,6 @@ angular.module('app.controllers', [])
       }, function error(err) {
 
         $ionicLoading.hide();
-        $scope.test = err;
       });
     });
   };

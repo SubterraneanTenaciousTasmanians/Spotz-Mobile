@@ -1,22 +1,26 @@
 <ion-view title="Login">
     <ion-content overflow-scroll="true" padding="true" class="has-header">
         <form class="list" ng-submit="signin(user)" ng-model="user">
-            <ion-list>
+            <!-- <ion-list> -->
                 <label class="item item-input">
                     <span class="input-label">Username</span>
-                    <input type="text" placeholder="" ng-model="user.username">
+                    <input type="text" ng-model="user.username">
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Password</span>
-                    <input type="password" placeholder="" ng-model="user.password">
+                    <input type="password" ng-model="user.password">
                 </label>
                 <h5>{{message}}</h5>
-            </ion-list>
-            <div class="spacer" style="height: 40px;"></div>
+            <!-- </ion-list> -->
+            <!-- <div class="spacer" style="height: 40px;"></div> -->
             <button class="button button-stable button-block ">Log in</button>
             <a ui-sref="signup" class="button button-positive button-clear button-block ">Or create an account</a>
+            <div class="button-bar">
+              <a class="button button-positive" on-tap="facebookSignin()"><i class="ion-social-facebook"></i>Signin</a>
+              <a class="button button-assertive" on-tap="googleSignin()"><i class="ion-social-googleplus-outline"></i>Signin</a>
+            </div>
         </form>
-          <button class="button button-stable button-block" on-tap="googleSignin()">GOOGLE</button>
-          <button class="button button-stable button-block" on-tap="facebookSignin()">FACEBOOK</button>
+          <!-- <button class="button button-stable button-block" on-tap="googleSignin()">GOOGLE</button> -->
+          <!-- <button class="button button-stable button-block" on-tap="facebookSignin()">FACEBOOK</button> -->
     </ion-content>
 </ion-view>
