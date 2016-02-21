@@ -1,0 +1,54 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com.synconset.imagepicker": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-device-motion": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        }
+    },
+    "dependent_plugins": {}
+}

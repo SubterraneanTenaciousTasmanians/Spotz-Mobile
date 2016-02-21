@@ -54,5 +54,9 @@
     "gulp-uglify": "^1.5.1",
     "node": "0.0.0",
     "nodemon": "^1.8.1"
-  }
+  },
+  "cordovaPlugins": [],
+  "cordovaPlatforms": [
+    "android"
+  ]
 }
