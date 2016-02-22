@@ -1,9 +1,5 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-.controller('map/NearMeCtrl', ['$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
-  //Grab token
-  var token = $localStorage['credentials'];
-
 .controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
   //Grab token
   var token = $localStorage['credentials'];
@@ -142,11 +138,14 @@ angular.module('app.controllers', ['spotzFilter'])
   $scope.parkingTest = '';
   $scope.timeLeftOnTimer;
 
-  function spotAvailableHere(timestamp) {
+  $scope.spotAvailableHere = function (timestamp) {
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
     };
+    $ionicPopup.confirm({
+      title: 'i threw a debugger in it',
+    });
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
@@ -217,7 +216,7 @@ angular.module('app.controllers', ['spotzFilter'])
        template: 'Can we mark this spot available?\n Tap cancel to add more time.',
      }).then(function (confirmed) {
        if (confirmed) {
-         spotAvailableHere(Date.now());
+         $scope.spotAvailableHere(Date.now());
        };
      });
     }, time);
@@ -246,14 +245,16 @@ angular.module('app.controllers', ['spotzFilter'])
         var X = result.x;
         var Y = result.y;
         var Z = result.z;
-        var timeStamp = result.timestamp;
+        var timestamp = result.timestamp;
         $scope.speed = result;
 
         // if acceleration exceeds a limit
         if (result.x > 50 || result.y > 50 || result.z > 50) {
-
           // mark current position as available for parking
-          spotAvailableHere(timestamp);
+          $ionicPopup.confirm({
+           title: result.timestamp,
+         });
+          $scope.spotAvailableHere(timestamp);
         }
       });
 
@@ -275,7 +276,6 @@ angular.module('app.controllers', ['spotzFilter'])
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
-  $scope.test2 = 'body';
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,
@@ -343,9 +343,6 @@ angular.module('app.controllers', ['spotzFilter'])
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       var coordinates = JSON.stringify([lat, lng]);
-      $scope.$apply(function () {
-        $scope.test2 = coordinates;
-      });
 
       $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
         $scope.test = data;
@@ -360,7 +357,6 @@ angular.module('app.controllers', ['spotzFilter'])
       }, function error(err) {
 
         $ionicLoading.hide();
-        $scope.test = err;
       });
     });
   };
