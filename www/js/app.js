@@ -17,6 +17,7 @@ angular.module('app', ['ionic', 'ngStorage', 'ngCordovaOauth', 'angularPayments'
 
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
+      // asdklfjasdlkfjasl;dkfjalksdfja;lksdfjaslkdfjasl;kdfjasl;kdfjasl;kdfjal;sdfjas
       StatusBar.styleDefault();
     }
   });
