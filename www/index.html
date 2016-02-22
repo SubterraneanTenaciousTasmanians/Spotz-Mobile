@@ -12,11 +12,12 @@
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
   <link src="lib/Ionicons/css/ionicons.css" rel="stylesheet">
   <link href="lib/ionic/css/main.css" rel="stylesheet">
-  <script src="lib/ionic/js/ionic.bundle.js"></script>
+  <script src="http://code.ionicframework.com/1.2.4/js/ionic.bundle.js"></script>
+  <!-- <script src="lib/ionic/js/ionic.bundle.js"></script> -->
   <script src="https://cdn.rawgit.com/nraboy/ng-cordova-oauth/master/dist/ng-cordova-oauth.min.js"></script>
 
   <script src="lib/ngCordova/dist/ng-cordova.js"></script>
-  <script src="lib/ng-file-upload/ng-file-upload.js"></script>
+  <!-- <script src="lib/ng-file-upload/ng-file-upload.js"></script> -->
   <!-- cordova script (this will be a 404 during development) -->
   <script src="cordova.js"></script>
   <script src="lib/angular-duration-filter-formatter/src/duration.js"></script>
@@ -44,12 +45,10 @@
 
 <body ng-app="app" animation="slide-left-right-ios7">
   <div>
-    <div>
-      <ion-nav-bar class="bar-stable">
-        <ion-nav-back-button class="button-icon icon ion-ios-arrow-back">Back</ion-nav-back-button>
-      </ion-nav-bar>
-      <ion-nav-view></ion-nav-view>
-    </div>
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button class="button-icon icon ion-ios-arrow-back">Back</ion-nav-back-button>
+    </ion-nav-bar>
+    <ion-nav-view></ion-nav-view>
   </div>
   <script src="http://maps.google.com/maps/api/js?key=AIzaSyDJ_mrj1ukn1vDl23Z5iIY-RqrOvp2YGR8&sensor=true"></script>
 </body>

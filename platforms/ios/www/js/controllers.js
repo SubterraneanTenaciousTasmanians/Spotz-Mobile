@@ -6,6 +6,10 @@ angular.module('app.controllers', ['spotzFilter'])
 
   //User street input
   $scope.otherStreet = function () {
+    if (!token) {
+      $state.go('login');
+    }
+
     $cordovaKeyboard.hideAccesoryBar(true);
 
     $cordovaKeyboard.disableScroll(true);
@@ -108,6 +112,10 @@ angular.module('app.controllers', ['spotzFilter'])
 
   $scope.facebookSignin = function () {
     signinFactory.facebookOauth().then(function (response) {
+      if (response.status === 409) {
+        $state.go('login');
+      }
+
       $localStorage.credentials = response.data;
       $state.go('tabsController.map/NearMe');
     });

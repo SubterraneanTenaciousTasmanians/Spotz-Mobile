@@ -55,9 +55,6 @@ angular.module('app.services', [])
       .then(function (res) {
         return $http.post('https://spotz.herokuapp.com/auth/facebookOauth', { id: res.data.id });
       });
-    }, function error(err) {
-
-      return err;
     });
   };
 
