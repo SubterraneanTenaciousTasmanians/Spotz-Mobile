@@ -1,0 +1,17 @@
+{
+  "name": "angular-duration-filter-formatter",
+  "version": "1.0.1",
+  "homepage": "https://github.com/oshai/angular-duration-filter",
+  "authors": [
+    "ohad.shai@intel.com"
+  ],
+  "main": "src/duration.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
