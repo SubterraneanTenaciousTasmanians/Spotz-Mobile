@@ -1,7 +1,9 @@
 angular.module('app.routes', [])
 
-.config(function ($stateProvider, $urlRouterProvider) {
-
+.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  $ionicConfigProvider.views.transition('ios');
+  $ionicConfigProvider.tabs.style('standard').position('bottom');
+  $ionicConfigProvider.navBar.alignTitle('center').positionPrimaryButtons('left');
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.

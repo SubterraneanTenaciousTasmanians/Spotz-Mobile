@@ -17,7 +17,7 @@
        under the License.
  */
 
-package com.spotz.herokuapp.com.spotzTGA;
+package com.spotz.herokuapp.comspotzTGA;
 
 import android.os.Bundle;
 import org.apache.cordova.*;
