@@ -1,8 +1,9 @@
 'use strict';
 angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
-.factory('MapFactory', ['$rootScope', '$http', '$window', '$timeout', '$cookies', 'KeyFactory', 'MapHelperFactory',  function ($rootScope, $http, $window, $timeout, $cookies, KeyFactory, MapHelperFactory) {
-
+.factory('MapFactory', ['$rootScope', '$http', '$window', '$timeout', '$localStorage', 'KeyFactory', 'MapHelperFactory', '$ionicPopup',  function ($rootScope, $http, $window, $timeout, $localStorage, KeyFactory, MapHelperFactory, $ionicPopup) {
+  
+  var token = $localStorage['credentials'];
   //google tooltip
   var tooltip = {};
   var searchBox = {};
@@ -12,8 +13,12 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   var bottomLeftX;
   var bottomLeftY;
 
+  var minZoomLevel = 15;
+  var boxSize = 0.006;  //size of box to display features on the map
+
   //remember what we fetched
   var downloadedGridZones = {};
+  var displayedGridZones = {};
   var displayedPolygons = {};
 
   //what we return
@@ -24,6 +29,8 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     downloadedGridZones = {};
     displayedPolygons = {};
   });
+  
+ 
 
   //===================================================
   //MAP FUNCTIONS
@@ -118,27 +125,72 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   //===================================================
   //PARKING ZONE FUNCTIONS
 
-  factory.fetchParkingZones = function (coordinates) {
+  factory.removeFeaturesNotIn = function (coordinateArray) {
 
-    var token = $cookies.get('credentials');
-
-    //check if we already downloaded this gridzone
-
-    if (downloadedGridZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates))]) {
-      console.log('already got it');
-      return;
+    var displayedZones = {};
+    for (var i = 0; i < coordinateArray.length; i++) {
+      displayedZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinateArray[i]))] = true;
     }
 
-    //if we made it here, we need to fetch the gridzone
-    //mark coordinates as downloaded
-    downloadedGridZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates))] = true;
+    //search through all download gridzones
+    for (var gridZone in downloadedGridZones) {
 
-    $http({
+      //hide any gridZones that are not in the current area
+      if (!displayedZones[gridZone]) {
+
+        downloadedGridZones[gridZone].forEach(function (feature) {
+          factory.map.data.remove(feature);
+        });
+
+        // set the display value to false so that the zones will be
+        // displayed next time they are fetched
+        displayedGridZones[gridZone] = false;
+      }
+    }
+  };
+
+  factory.fetchAndDisplayParkingZonesAt = function (coordinates) {
+
+    var gridStr = JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates));
+    var newColor;
+
+    //check if we already downloaded this gridzone
+    if (downloadedGridZones[gridStr]) {
+
+      //check to see if they are displayed, if not, display them
+      if (!displayedGridZones[gridStr]) {
+        downloadedGridZones[gridStr].forEach(function (feature) {
+
+          factory.map.data.add(feature);
+
+          //color it based on the currently selected constraints ($rootScope.constraints)
+          newColor = MapHelperFactory.getColorOfRule(feature, $rootScope.constraints);
+          if (newColor) {
+            feature.setProperty('color', newColor.color);
+            feature.setProperty('show', newColor.show);
+          }
+
+        });
+
+        displayedGridZones[gridStr] = true;
+      }
+
+      //return a promise, passing array of features
+      return new Promise(function (resolve) {
+        resolve(downloadedGridZones[gridStr]);
+      });
+
+    }
+
+    //if we made it here, we need to fetch the gridzone from the server
+    //mark coordinates as downloaded
+    downloadedGridZones[gridStr] = [];
+
+    return $http({
       method:'GET',
-      url: '/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + token,
+      url: 'http://spotz.herokuapp.com/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + token,
     })
     .success(function (polygonsFromDb) {
-
       $rootScope.$broadcast('mapLoaded');
 
       var boundary;
@@ -211,12 +263,18 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
           newFeature.setProperty('show', newColor.show);
         }
 
+
+        downloadedGridZones[gridStr].push(newFeature);
+
       });
+
+      //resolve promise, return array of features
+      displayedGridZones[gridStr] = true;
+      return downloadedGridZones[gridStr];    
     });
   };
 
   factory.deleteParkingZone = function (polyId) {
-    var token = $cookies.get('credentials');
 
     return $http.delete('/api/zones/' + polyId + '/' + token)
     .success(function (data) {
@@ -284,7 +342,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
       //create a new map and center to downtown Berkeley
       factory.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 18,
+        zoom: 16,
         center: { lng: -122.26156639099121, lat: 37.86434903305901 },
       });
 
@@ -300,8 +358,9 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
       //=====================================================
       //enable tooltip display
 
-      factory.map.data.addListener('click', function (event) {
-        console.log(event.feature.getProperty('id'));
+      factory.map.data.addListener('dblclick', function (event) {
+        // event.stopPropagation();
+        // console.log(event.feature.getProperty('id'));
         factory.setSelectedFeature(event.feature);
         factory.refreshTooltipText(event.feature);
         tooltip.setPosition(event.latLng);
@@ -350,34 +409,29 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
       });
 
       //=====================================================
-      //Google search bar functionality
+      // Listener for loading in data as the map scrolls
+      function refreshDisplayedFeatures() {
 
-      // Bias the SearchBox results towards current map's viewport.
-      factory.map.addListener('bounds_changed', function () {
-        searchBox.setBounds(factory.map.getBounds());
-      });
-
-      // Listen for the event fired when the user enters an address
-      searchBox.addListener('places_changed', function () {
-
-        var places = searchBox.getPlaces();
-        var bounds = new google.maps.LatLngBounds();
-
-        places.forEach(function (place) {
-
-          if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
+        console.log('refreshing features');
+        var coordinates = [factory.map.getCenter().lng(), factory.map.getCenter().lat()];
+        var boxBoundaries = [
+          [coordinates[0] + boxSize, coordinates[1] + boxSize],
+          [coordinates[0] + boxSize, coordinates[1] - boxSize],
+          [coordinates[0] - boxSize, coordinates[1] + boxSize],
+          [coordinates[0] - boxSize, coordinates[1] - boxSize],
+        ];
+        boxBoundaries.forEach(function (coordinates) {
+          factory.fetchAndDisplayParkingZonesAt(coordinates);
         });
+        factory.removeFeaturesNotIn(boxBoundaries);
+      }
 
-        //change the map location
-        factory.map.fitBounds(bounds);
-        //set the zoom level
-        factory.map.setZoom(18);
+      //add listenter to debounced version of refreshDisplayedFeatures (front end optimization)
+      factory.map.addListener('center_changed', MapHelperFactory.debounce(refreshDisplayedFeatures, 500, true));        //=====================================================
 
+      // Limit the zoom level
+      google.maps.event.addListener(factory.map, 'zoom_changed', function () {
+        if (factory.map.getZoom() < minZoomLevel) { factory.map.setZoom(minZoomLevel); }
       });
 
       //=====================================================
@@ -393,15 +447,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
         MapHelperFactory.paintGridLines(factory.map, bottomLeftX, topRightX, bottomLeftY, topRightY);
 
       });
-
       //===================================================
-      //click handler to load data into the world grid squares
-      factory.map.addListener('click', function (event) {
-        $rootScope.$broadcast('loadMap');
-        var coordinates = [event.latLng.lng(), event.latLng.lat()];
-        factory.fetchParkingZones(coordinates);
-      });
-
       //finally, we are at the end of init
       //execute the callack passed in, returning the map object
       callback(factory.map);

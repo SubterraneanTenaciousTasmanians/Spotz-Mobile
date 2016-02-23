@@ -12,7 +12,8 @@ angular.module('MapHelpers', ['AdminServices'])
   var helperFactory = {};
 
   var convertTime = function (inputTimeString) {
-    return moment(inputTimeString, 'H:mm:ss').format('Hmm');
+    return inputTimeString;
+    // moment(inputTimeString, 'H:mm:ss').format('Hmm');
   };
 
   helperFactory.computeGridNumbers = function (coordinates) {
@@ -23,6 +24,34 @@ angular.module('MapHelpers', ['AdminServices'])
      Math.ceil(x / stepX),
      Math.ceil(y / stepY),
     ];
+  };
+  // Returns a function, that, as long as it continues to be invoked, will not
+  // be triggered. The function will be called after it stops being called for
+  // N milliseconds. If `immediate` is passed, trigger the function on the
+  // leading edge, instead of the trailing.
+  helperFactory.debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var _this = this;
+      var args = arguments;
+      var later = function () {
+        timeout = null;
+        //if this is true, we already waited, and we are now calling the function
+        if (!immediate) { func.apply(_this, args); }
+      };
+      //if callnow is true, we should call the function first, then
+      //block all future calls until a window 'wait' time where no function calls are made
+      //each time the funtion is called, the wait time extends
+      //if callnow is false, we wait for the window first, then call
+      var callNow = immediate && !timeout;
+      //clear previous timeout, so that the timer to wait is extended
+      clearTimeout(timeout);
+      //set new timeout
+      timeout = setTimeout(later, wait);
+      //if this is true, we should call the function first, and then wait
+      if (callNow) { func.apply(_this, args); }
+    };
+
   };
 
   helperFactory.createTooltipText = function(feature) {

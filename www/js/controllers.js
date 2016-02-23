@@ -11,7 +11,6 @@ angular.module('app.controllers', ['spotzFilter'])
     }
 
     $cordovaKeyboard.hideAccesoryBar(true);
-
     $cordovaKeyboard.disableScroll(true);
     $cordovaKeyboard.close();
 
@@ -144,7 +143,8 @@ angular.module('app.controllers', ['spotzFilter'])
   $scope.newSpotAvail = '';
   $scope.parked = false;
   $scope.parkingTest = '';
-  $scope.timeLeftOnTimer;
+  $scope.timeLeftOnTimer = 0;
+  $scope.timeToPark = 0;
 
   $scope.spotAvailableHere = function (timestamp) {
     var positionOptions = {

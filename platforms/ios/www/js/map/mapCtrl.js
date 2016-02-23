@@ -2,19 +2,33 @@
 
 angular.module('spotz.map', ['MapServices'])
 
-.controller('mapCtrl', ['$scope', '$rootScope', '$cookies', '$state', 'MapFactory', 'LoginFactory', function ($scope, $rootScope, $cookies, $state, MapFactory, LoginFactory) {
+.controller('mapCtrl', ['$scope', '$rootScope', '$state', 'MapFactory', '$ionicPlatform', '$ionicPopup', function ($scope, $rootScope, $state, MapFactory, $ionicPlatform, $ionicPopup) {
+       
+  $ionicPlatform.ready(function() {
+    
   $scope.mapLoading = true;
+
+  $scope.constraints = {
+    date: new Date(),
+    time: new Date(),//moment().format('H:mm'),
+    duration: 1,
+    text:'mobile',
+  };
+
+  $rootScope.constraints = $scope.constraints;
 
   $rootScope.$on('googleMapLoaded', function () {
     $scope.mapLoading = false;
   });
 
   $rootScope.$on('loadMap', function () {
+
     $scope.mapLoading = true;
   });
 
   $rootScope.$on('mapLoaded', function () {
     $scope.mapLoading = false;
+
   });
 
   $scope.deleteRule = function (zoneId, ruleId) {
@@ -23,11 +37,11 @@ angular.module('spotz.map', ['MapServices'])
   };
 
   //make sure user is authenticated
-  LoginFactory.checkCredentials().then(function (loggedIn) {
-    if (!loggedIn) {
-      $state.go('login');
-    }
-  });
+  // LoginFactory.checkCredentials().then(function (loggedIn) {
+  //   if (!loggedIn) {
+  //     $state.go('login');
+  //   }
+  // });
 
   //load the google map, then return map object in callback
   MapFactory.init(function (map) {
@@ -35,11 +49,11 @@ angular.module('spotz.map', ['MapServices'])
     var center = map.getCenter();
 
     //get the parking zones based on the center point
-    MapFactory.fetchParkingZones([center.lng(), center.lat()]);
+    MapFactory.fetchAndDisplayParkingZonesAt([center.lng(), center.lat()]);
 
     // map data ready, broadcast to the sibling controller (sideCtrl)
     $rootScope.$broadcast('googleMapLoaded');
   });
-
+});
 },
 ]);

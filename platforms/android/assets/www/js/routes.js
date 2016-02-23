@@ -11,8 +11,8 @@ angular.module('app.routes', [])
       url: '/page2',
       views: {
         tab2: {
-          templateUrl: 'templates/map/NearMe.html',
-          controller: 'map/NearMeCtrl',
+          templateUrl: 'templates/map.html',
+          controller: 'spotz.map',
         },
       },
     })
