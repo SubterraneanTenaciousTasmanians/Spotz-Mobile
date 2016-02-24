@@ -151,14 +151,11 @@ angular.module('app.controllers', ['spotzFilter'])
       enableHighAccuracy: false,
       timeout: 10000,
     };
-    $ionicPopup.confirm({
-      title: 'i threw a debugger in it',
-    });
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       $scope.newSpotAvail = Math.floor(lat) + '/' + Math.floor(lng) + ': ' + timestamp;
-      $ionicPopup.alert({ title: $scope.newSpotAvail });
+      
 
       $http.post('https://spotz.herokuapp.com/parkingSpot', $scope.newSpotAvail).then(function (err, data) {
         $scope.parkingTest = err + ': ' + data;
@@ -203,15 +200,21 @@ angular.module('app.controllers', ['spotzFilter'])
   function updateTimer(time) {
     var current = time;
     var x;
-    stopTimer = $interval(function () {
+    $scope.stopTimer = $interval(function () {
 
       current -= 1000;
       if (current < 1000) {
-        $interval.cancel(stopTimer);
+        $interval.cancel($scope.stopTimer);
       };
 
       $scope.timeLeftOnTimer = formatMillisecs(current);
     }, 1000);
+  };
+
+  $scope.resetTimer = function(){
+    $interval.cancel($scope.stopTimer);
+    $scope.timeLeftOnTimer = 0;
+    $scope.timeToPark = '';
   };
 
   $scope.timerCountdown = function (res, time) {
@@ -254,15 +257,13 @@ angular.module('app.controllers', ['spotzFilter'])
         var Y = result.y;
         var Z = result.z;
         var timestamp = result.timestamp;
-        $scope.speed = result;
+        // $scope.speed = result;
 
         // if acceleration exceeds a limit
         if (result.x > 50 || result.y > 50 || result.z > 50) {
           // mark current position as available for parking
-          $ionicPopup.confirm({
-           title: result.timestamp,
-         });
           $scope.spotAvailableHere(timestamp);
+          $scope.resetTimer();
         }
       });
 

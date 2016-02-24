@@ -203,15 +203,20 @@ angular.module('app.controllers', ['spotzFilter'])
   function updateTimer(time) {
     var current = time;
     var x;
-    stopTimer = $interval(function () {
+    $scope.stopTimer = $interval(function () {
 
       current -= 1000;
       if (current < 1000) {
-        $interval.cancel(stopTimer);
+        $interval.cancel($scope.stopTimer);
       };
 
       $scope.timeLeftOnTimer = formatMillisecs(current);
     }, 1000);
+  };
+
+  $scope.resetTimer = function(){
+    $interval.cancel($scope.stopTimer);
+    $scope.timeLeftOnTimer = 0;
   };
 
   $scope.timerCountdown = function (res, time) {

@@ -1,0 +1,35 @@
+.backgrounds {
+	background: linear-gradient(  to top, #C3FF7D, #7CB342);
+}
+.backgrounds h1 {
+  margin: 25px 0 25px 0;
+}
+.button.has-header {
+  background-color: #448AFF; font-weight: bold;font-size:20px;color: rgba(255,255,255,0.7); text-align: center; width:100%
+}
+.spotz-title {
+  margin:45px 0 45px 0;
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+}
+a .item-content {
+  margin:0;
+}
+.item-complex .item-content {
+  background-color: #448AFF;
+  padding:10px 10px 10px 10px;
+  text-align: center;
+  margin: 0 auto;
+  width:75%;
+}
+
+.bar .title {
+  background-color: #448AFF;
+  margin:0;
+  padding:0;
+}
+.bar.bar-stable .title {
+  font-size: 25px;
+  font-weight:bold;
+  color: rgba(255,255,255,0.7);
+}

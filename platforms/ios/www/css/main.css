@@ -1,0 +1,23 @@
+.backgrounds {
+	background: linear-gradient(  to bottom, #7CB342, #9CCC65);
+}
+.spotz-title {
+  text-align: center;
+  color: rgba(255,255,255,0.7);
+}
+.photo-upload-btn {
+  text-align: center;
+  margin: 0 auto;
+  width:75%;
+}
+
+.bar .title {
+  background-color: #448AFF;
+  margin:0;
+  padding:0;
+}
+.bar.bar-stable .title {
+  font-size: 25px;
+  font-weight:bold;
+  color: rgba(255,255,255,0.7);
+}
