@@ -43,6 +43,14 @@
                         {
                             "xml": "<feature name=\"ImagePicker\"><param name=\"ios-package\" value=\"SOSPicker\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Diagnostic\"><param name=\"ios-package\" value=\"Diagnostic\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"ios-package\" value=\"CDVDevice\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -53,6 +61,16 @@
                         {
                             "xml": "<string />",
                             "count": 2
+                        },
+                        {
+                            "xml": "<string>This app will now only track your location when the screen is on and the app is displayed.</string>",
+                            "count": 1
+                        }
+                    ],
+                    "NSLocationAlwaysUsageDescription": [
+                        {
+                            "xml": "<string>This app requires constant access to your location in order to track your position, even when the screen is off.</string>",
+                            "count": 1
                         }
                     ]
                 }
@@ -83,6 +101,12 @@
         },
         "com.synconset.imagepicker": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
         }
     },
     "dependent_plugins": {},
@@ -374,6 +398,22 @@
             "clobbers": [
                 "plugins.imagePicker"
             ]
+        },
+        {
+            "file": "plugins/cordova.plugins.diagnostic/www/ios/diagnostic.js",
+            "id": "cordova.plugins.diagnostic.Diagnostic",
+            "pluginId": "cordova.plugins.diagnostic",
+            "clobbers": [
+                "cordova.plugins.diagnostic"
+            ]
+        },
+        {
+            "file": "plugins/cordova-plugin-device/www/device.js",
+            "id": "cordova-plugin-device.device",
+            "pluginId": "cordova-plugin-device",
+            "clobbers": [
+                "device"
+            ]
         }
     ],
     "plugin_metadata": {
@@ -384,6 +424,8 @@
         "cordova-plugin-geolocation": "2.1.0",
         "cordova-plugin-inappbrowser": "1.3.1-dev",
         "cordova-plugin-file-transfer": "1.5.0",
-        "com.synconset.imagepicker": "1.0.7"
+        "com.synconset.imagepicker": "1.0.7",
+        "cordova.plugins.diagnostic": "2.3.10",
+        "cordova-plugin-device": "1.1.1"
     }
 }

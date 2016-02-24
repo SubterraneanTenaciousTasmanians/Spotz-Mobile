@@ -10,10 +10,14 @@
         </ion-list>
         <ion-list></ion-list>
         <form class="list">
-            <ion-item ng-model='timeToPark' ng-show='timeLeftOnTimer'> Parking Timer: {{timeLeftOnTimer}} </ion-item>
-            <ion-item class="range range-positive">{{timeToPark | formatDuration}}
-            <input ng-model='timeToPark' type="range" value="timeToPark" min="0" max="21600000">
-            <button on-touch='parkNow(timeToPark)' ng-model='timeToPark' class="button">PARK!</button>
+            <ion-item ng-model='timeToPark' ng-show='timeLeftOnTimer'> Parking Timer: {{timeLeftOnTimer}} 
+              <div>
+                <button on-touch='resetTimer()' class='button'>Cancel</button>
+              </div>
+            </ion-item>
+            <ion-item ng-hide='timeLeftOnTimer' class="range range-positive">{{timeToPark | formatDuration}}
+              <input ng-model='timeToPark' type="range" value="timeToPark" min="0" max="21600000">
+              <button on-touch='parkNow(timeToPark)' ng-model='timeToPark' class="button">PARK!</button>
             </ion-item>
         </form>
         <button style="line-height: 250px; border: 1px solid rgb(238, 238, 238); border-radius: 3px; text-align: center; background-color: rgb(255, 255, 255);">

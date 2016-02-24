@@ -48,6 +48,9 @@
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
         }
     },
     "dependent_plugins": {}

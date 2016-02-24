@@ -13,6 +13,9 @@
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "spotzTGA"
         },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
         "cordova-plugin-device-motion": {
             "PACKAGE_NAME": "spotzTGA"
         },
@@ -30,6 +33,9 @@
         },
         "com.synconset.imagepicker": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
         }
     },
     "dependent_plugins": {}
