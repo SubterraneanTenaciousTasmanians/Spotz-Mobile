@@ -1,11 +1,13 @@
 {
     "libiconv.dylib": 1,
-    "AVFoundation.framework": 2,
+    "AVFoundation.framework": 3,
     "CoreVideo.framework": 1,
     "QuartzCore.framework": 1,
     "CoreImage.framework": 1,
     "AudioToolbox.framework": 1,
     "ImageIO.framework": 1,
-    "CoreLocation.framework": 2,
-    "CoreMotion.framework": 1
+    "CoreLocation.framework": 3,
+    "CoreMotion.framework": 1,
+    "CoreBluetooth.framework": 1,
+    "Photos.framework": 1
 }

@@ -598,6 +598,16 @@
                         }
                     ]
                 }
+            },
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Diagnostic\"><param name=\"android-package\" value=\"cordova.plugins.Diagnostic\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
             }
         }
     },
@@ -643,6 +653,9 @@
         },
         "phonegap-plugin-barcodescanner": {
             "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
         }
     },
     "dependent_plugins": {},
@@ -915,6 +928,13 @@
             "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
             "clobbers": [
                 "cordova.plugins.barcodeScanner"
+            ]
+        },
+        {
+            "file": "plugins/cordova.plugins.diagnostic/www/android/diagnostic.js",
+            "id": "cordova.plugins.diagnostic.Diagnostic",
+            "clobbers": [
+                "cordova.plugins.diagnostic"
             ]
         }
     ]

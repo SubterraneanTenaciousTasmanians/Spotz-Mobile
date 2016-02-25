@@ -14,7 +14,7 @@ angular.module('app.routes', [])
       views: {
         tab2: {
           templateUrl: 'templates/map.html',
-          controller: 'spotz.map',
+          controller: 'mapCtrl',
         },
       },
     })
