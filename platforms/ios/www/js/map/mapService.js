@@ -37,7 +37,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
   factory.clearDisplayed = function () {
     console.log('CLEARING');
-    downloadedGridZones = {};
     displayedGridZones = {};
     displayedPolygons = {};
     console.log('CLEARED', displayedGridZones, displayedPolygons);
@@ -368,6 +367,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
       });
         //events will allow us to access and remove event listeners
         factory.mapEvents = google.maps.event;
+
 
         //save the tooltip (tooltip) in a local variable
         tooltip = new google.maps.InfoWindow();
