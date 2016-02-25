@@ -13,7 +13,7 @@ angular.module('app.routes', [])
       url: '/page2',
       views: {
         tab2: {
-          templateUrl: 'templates/map.html',
+          templateUrl: 'map/map.html',
           controller: 'mapCtrl',
         },
       },
@@ -37,7 +37,7 @@ angular.module('app.routes', [])
       url: '/page10',
       views: {
         tab1: {
-          templateUrl: 'templates/parking.html',
+          templateUrl: 'parking/parking.html',
           controller: 'parkingCtrl',
         },
       },

@@ -1,72 +1,5 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-// .controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
-//   //Grab token
-//   var token = $localStorage['credentials'];
-//
-//   //User street input
-//   $scope.otherStreet = function () {
-//     if (!token) {
-//       $state.go('login');
-//     }
-//
-//     $cordovaKeyboard.hideAccesoryBar(true);
-//     $cordovaKeyboard.disableScroll(true);
-//     $cordovaKeyboard.close();
-//
-//     var isVisible = $cordovaKeyboard.isVisible();
-//   };
-//
-//   //Geolocation service
-//   $ionicPlatform.ready(function () {
-//
-//
-//     var positionOptions = {
-//       enableHighAccuracy: false,
-//       timeout: 10000,
-//     };
-//
-//     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-//       var lat = position.coords.latitude;
-//       var lng = position.coords.longitude;
-//       MapFactory.init(function (map) {
-//         console.log('get current position', token);
-//         if (!token) {
-//           $state.go('login');
-//         }
-//
-//         MapFactory.loadColors(function () {
-//           MapFactory.fetchParkingZones([lng, lat, token]);
-//         });
-//       });
-//
-//
-//       console.log('current position', lat, lng);
-//       google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-//
-//         var marker = new google.maps.Marker({
-//           map: $scope.map,
-//           enableHighAccuracy: false,
-//           animation: google.maps.Animation.DROP,
-//           position: myLatLng,
-//         });
-//       });
-//
-//       console.log('get current position', token);
-//       $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
-//       console.log('POLYGONS BABY', err, data);
-//     });
-//
-//     }, function (err) {
-//
-//       console.log('error in initializing the map: ', err);
-//     });
-//   });
-//
-//   //Launch Navigation Service
-// },
-// ])
-
 .controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
   $scope.message = '';
   $scope.checkCredentials = function () {
@@ -123,6 +56,9 @@ angular.module('app.controllers', ['spotzFilter'])
 },
 ])
 
+<<<<<<< HEAD
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
+=======
 .controller('parkingCtrl', function ($scope, $cordovaDeviceMotion, $cordovaGeolocation, $http, $ionicPopup, $timeout, $interval) {
   $scope.newSpotAvail = '';
   $scope.parked = false;
@@ -135,11 +71,14 @@ angular.module('app.controllers', ['spotzFilter'])
       enableHighAccuracy: false,
       timeout: 10000,
     };
+    $ionicPopup.confirm({
+      title: 'i threw a debugger in it',
+    });
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       $scope.newSpotAvail = Math.floor(lat) + '/' + Math.floor(lng) + ': ' + timestamp;
-
+      $ionicPopup.alert({ title: $scope.newSpotAvail });
 
       $http.post('https://spotz.herokuapp.com/parkingSpot', $scope.newSpotAvail).then(function (err, data) {
         $scope.parkingTest = err + ': ' + data;
@@ -184,21 +123,15 @@ angular.module('app.controllers', ['spotzFilter'])
   function updateTimer(time) {
     var current = time;
     var x;
-    $scope.stopTimer = $interval(function () {
+    stopTimer = $interval(function () {
 
       current -= 1000;
       if (current < 1000) {
-        $interval.cancel($scope.stopTimer);
+        $interval.cancel(stopTimer);
       };
 
       $scope.timeLeftOnTimer = formatMillisecs(current);
     }, 1000);
-  };
-
-  $scope.resetTimer = function(){
-    $interval.cancel($scope.stopTimer);
-    $scope.timeLeftOnTimer = 0;
-    $scope.timeToPark = '';
   };
 
   $scope.timerCountdown = function (res, time) {
@@ -213,7 +146,6 @@ angular.module('app.controllers', ['spotzFilter'])
        if (confirmed) {
          $scope.spotAvailableHere(Date.now());
        };
-       $scope.resetTimer();
      });
     }, time);
   };
@@ -242,13 +174,15 @@ angular.module('app.controllers', ['spotzFilter'])
         var Y = result.y;
         var Z = result.z;
         var timestamp = result.timestamp;
-        // $scope.speed = result;
+        $scope.speed = result;
 
         // if acceleration exceeds a limit
         if (result.x > 50 || result.y > 50 || result.z > 50) {
           // mark current position as available for parking
+          $ionicPopup.confirm({
+           title: result.timestamp,
+         });
           $scope.spotAvailableHere(timestamp);
-          $scope.resetTimer();
         }
       });
 
@@ -264,12 +198,23 @@ angular.module('app.controllers', ['spotzFilter'])
   }, false);
 })
 
-.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $cordovaGeolocation) {
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
+  $scope.keyboardDown = true;
+
+  $scope.buttonToggle = function(){
+    console.log("BUTTON TOGGLE FIRED OFF");
+    $scope.keyboardDown = !$scope.keyboardDown;
+  };
+  cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+  // window.addEventListener('native.keyboardshow', $scope.buttonToggle);
+  // window.addEventListener('native.keyboardhide', $scope.buttonToggle);
+
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,
@@ -325,7 +270,10 @@ angular.module('app.controllers', ['spotzFilter'])
   };
 
   $scope.sendPhoto = function () {
+<<<<<<< HEAD
 
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
@@ -342,7 +290,10 @@ angular.module('app.controllers', ['spotzFilter'])
           $state.go('tabsController.parking');
         }, 1500);
       }, function error(err) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
       });
     });
   };
@@ -371,7 +322,10 @@ angular.module('app.controllers', ['spotzFilter'])
         $scope.analyzed = true;
         $scope.imageSrc = regexed;
       });
+<<<<<<< HEAD
 
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
     }, function (err) {
 
       $scope.imageSrc = 'err' + err;

@@ -37,7 +37,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
   factory.clearDisplayed = function () {
     console.log('CLEARING');
-    downloadedGridZones = {};
     displayedGridZones = {};
     displayedPolygons = {};
     console.log('CLEARED', displayedGridZones, displayedPolygons);

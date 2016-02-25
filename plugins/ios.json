@@ -36,6 +36,9 @@
         },
         "cordova.plugins.diagnostic": {
             "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
         }
     },
     "dependent_plugins": {}

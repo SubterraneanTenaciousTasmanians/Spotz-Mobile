@@ -303,6 +303,15 @@ module.exports = [
         "clobbers": [
             "device"
         ]
+    },
+    {
+        "file": "plugins/ionic-plugin-keyboard/www/ios/keyboard.js",
+        "id": "ionic-plugin-keyboard.keyboard",
+        "pluginId": "ionic-plugin-keyboard",
+        "clobbers": [
+            "cordova.plugins.Keyboard"
+        ],
+        "runs": true
     }
 ];
 module.exports.metadata = 
@@ -317,7 +326,8 @@ module.exports.metadata =
     "cordova-plugin-file-transfer": "1.5.0",
     "com.synconset.imagepicker": "1.0.7",
     "cordova.plugins.diagnostic": "2.3.10",
-    "cordova-plugin-device": "1.1.1"
+    "cordova-plugin-device": "1.1.1",
+    "ionic-plugin-keyboard": "1.0.8"
 }
 // BOTTOM OF METADATA
 });
