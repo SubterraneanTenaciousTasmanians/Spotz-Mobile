@@ -1,67 +1,5 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicPlatform, $http, MapFactory) {
-  //Grab token
-  var token = $localStorage['credentials'];
-
-  //User street input
-  $scope.otherStreet = function () {
-    if (!token) {
-      $state.go('login');
-    }
-
-    $cordovaKeyboard.hideAccesoryBar(true);
-    $cordovaKeyboard.disableScroll(true);
-    $cordovaKeyboard.close();
-
-    var isVisible = $cordovaKeyboard.isVisible();
-  };
-
-  //Geolocation service
-  $ionicPlatform.ready(function () {
-
-    var positionOptions = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-    };
-
-    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      MapFactory.init(function (map) {
-        if (!token) {
-          $state.go('login');
-        }
-
-        MapFactory.loadColors(function () {
-          MapFactory.fetchParkingZones([lng, lat, token]);
-        });
-      });
-
-      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-
-        var marker = new google.maps.Marker({
-          map: $scope.map,
-          enableHighAccuracy: false,
-          animation: google.maps.Animation.DROP,
-          position: myLatLng,
-        });
-      });
-
-      $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
-      console.log('POLYGONS BABY', err, data);
-    });
-
-    }, function (err) {
-
-      console.log('error in initializing the map: ', err);
-    });
-  });
-
-  //Launch Navigation Service
-},
-])
-
 .controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
   $scope.message = '';
   $scope.checkCredentials = function () {
@@ -118,146 +56,8 @@ angular.module('app.controllers', ['spotzFilter'])
 },
 ])
 
-.controller('parkingCtrl', function ($scope, $cordovaDeviceMotion, $cordovaGeolocation, $http, $ionicPopup, $timeout, $interval) {
-  $scope.newSpotAvail = '';
-  $scope.parked = false;
-  $scope.parkingTest = '';
-  $scope.timeLeftOnTimer = 0;
-  $scope.timeToPark = 0;
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
 
-  $scope.spotAvailableHere = function (timestamp) {
-    var positionOptions = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-    };
-    $ionicPopup.confirm({
-      title: 'i threw a debugger in it',
-    });
-    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      $scope.newSpotAvail = Math.floor(lat) + '/' + Math.floor(lng) + ': ' + timestamp;
-      $ionicPopup.alert({ title: $scope.newSpotAvail });
-
-      $http.post('https://spotz.herokuapp.com/parkingSpot', $scope.newSpotAvail).then(function (err, data) {
-        $scope.parkingTest = err + ': ' + data;
-      });
-    });
-
-    $scope.parked = false;
-  };
-
-  function formatMillisecs(milliseconds) {
-
-    var result = '';
-
-    x = milliseconds / 1000;
-    seconds = Math.floor(x % 60);
-    if (seconds < 10) {
-      seconds = '0' + seconds;
-    }
-
-    result = seconds + ' secs' + result;
-    x /= 60;
-    minutes = Math.floor(x % 60);
-    if (minutes < 10) {
-      minutes = '0' + minutes;
-    }
-
-    result = minutes + ' mins:' + result;
-    x /= 60;
-    hours = Math.floor(x % 24);
-    if (hours < 10  && hours) {
-      hours = '0' + hours;
-    }
-
-    if (hours) {
-      result = hours + ' hours:' + result;
-    }
-
-    return result;
-
-  };
-
-  function updateTimer(time) {
-    var current = time;
-    var x;
-    stopTimer = $interval(function () {
-
-      current -= 1000;
-      if (current < 1000) {
-        $interval.cancel(stopTimer);
-      };
-
-      $scope.timeLeftOnTimer = formatMillisecs(current);
-    }, 1000);
-  };
-
-  $scope.timerCountdown = function (res, time) {
-    updateTimer(time);
-    $scope.timeLeftOnTimer = time;
-    var endtimer = $timeout(
-    function () {
-      var alertPopup = $ionicPopup.confirm({
-       title: 'Parking Timer Expired',
-       template: 'Can we mark this spot available?\n Tap cancel to add more time.',
-     }).then(function (confirmed) {
-       if (confirmed) {
-         $scope.spotAvailableHere(Date.now());
-       };
-     });
-    }, time);
-  };
-
-  $scope.parkNow = function (time) {
-    $scope.parkingTest = time;
-    $scope.newSpotAvail = '';
-    $scope.parked = true;
-    $scope.timerCountdown(null, time);
-  };
-
-  // watch Acceleration
-  var options = { frequency: 100 };
-
-  document.addEventListener('deviceready', function () {
-
-    var watch = $cordovaDeviceMotion.watchAcceleration(options);
-    watch.then(
-      null,
-      function (error) {
-        // An error occurred
-      },
-
-      function (result) {
-        var X = result.x;
-        var Y = result.y;
-        var Z = result.z;
-        var timestamp = result.timestamp;
-        $scope.speed = result;
-
-        // if acceleration exceeds a limit
-        if (result.x > 50 || result.y > 50 || result.z > 50) {
-          // mark current position as available for parking
-          $ionicPopup.confirm({
-           title: result.timestamp,
-         });
-          $scope.spotAvailableHere(timestamp);
-        }
-      });
-
-    // watch.clearWatch();
-    // // OR
-    // $cordovaDeviceMotion.clearWatch(watch)
-    //   .then(function(result) {
-    //     // success
-    //     }, function (error) {
-    //     // error
-    //   });
-
-  }, false);
-})
-
-.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $cordovaGeolocation) {
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
   $scope.imageSrc = '';
@@ -328,6 +128,7 @@ angular.module('app.controllers', ['spotzFilter'])
   };
 
   $scope.sendPhoto = function () {
+
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
@@ -344,6 +145,7 @@ angular.module('app.controllers', ['spotzFilter'])
           $state.go('tabsController.parking');
         }, 1500);
       }, function error(err) {
+
       });
     });
   };
@@ -372,6 +174,7 @@ angular.module('app.controllers', ['spotzFilter'])
         $scope.analyzed = true;
         $scope.imageSrc = regexed;
       });
+
     }, function (err) {
 
       $scope.imageSrc = 'err' + err;

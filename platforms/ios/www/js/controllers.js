@@ -1,77 +1,5 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
-  //Grab token
-  var token = $localStorage['credentials'];
-
-  //User street input
-  $scope.otherStreet = function () {
-    if (!token) {
-      $state.go('login');
-    }
-
-    $cordovaKeyboard.hideAccesoryBar(true);
-    $cordovaKeyboard.disableScroll(true);
-    $cordovaKeyboard.close();
-
-    var isVisible = $cordovaKeyboard.isVisible();
-  };
-
-  //Geolocation service
-  $ionicPlatform.ready(function () {
-
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"><br/>Acquiring location!</ion-spinner>',
-    });
-
-    var positionOptions = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-    };
-
-    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      MapFactory.init(function (map) {
-        console.log('get current position', token);
-        if (!token) {
-          $state.go('login');
-        }
-
-        MapFactory.loadColors(function () {
-          MapFactory.fetchParkingZones([lng, lat, token]);
-        });
-      });
-
-      $ionicLoading.hide();
-
-      console.log('current position', lat, lng);
-      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-
-        var marker = new google.maps.Marker({
-          map: $scope.map,
-          enableHighAccuracy: false,
-          animation: google.maps.Animation.DROP,
-          position: myLatLng,
-        });
-      });
-
-      console.log('get current position', token);
-      $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
-      console.log('POLYGONS BABY', err, data);
-    });
-
-    }, function (err) {
-
-      $ionicLoading.hide();
-      console.log('error in initializing the map: ', err);
-    });
-  });
-
-  //Launch Navigation Service
-},
-])
-
 .controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
   $scope.message = '';
   $scope.checkCredentials = function () {
@@ -128,6 +56,9 @@ angular.module('app.controllers', ['spotzFilter'])
 },
 ])
 
+<<<<<<< HEAD
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
+=======
 .controller('parkingCtrl', function ($scope, $cordovaDeviceMotion, $cordovaGeolocation, $http, $ionicPopup, $timeout, $interval) {
   $scope.newSpotAvail = '';
   $scope.parked = false;
@@ -268,6 +199,7 @@ angular.module('app.controllers', ['spotzFilter'])
 })
 
 .controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $cordovaGeolocation) {
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
   $scope.imageSrc = '';
@@ -338,6 +270,10 @@ angular.module('app.controllers', ['spotzFilter'])
   };
 
   $scope.sendPhoto = function () {
+<<<<<<< HEAD
+
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
@@ -354,6 +290,10 @@ angular.module('app.controllers', ['spotzFilter'])
           $state.go('tabsController.parking');
         }, 1500);
       }, function error(err) {
+<<<<<<< HEAD
+
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
       });
     });
   };
@@ -382,6 +322,10 @@ angular.module('app.controllers', ['spotzFilter'])
         $scope.analyzed = true;
         $scope.imageSrc = regexed;
       });
+<<<<<<< HEAD
+
+=======
+>>>>>>> ca5a63c105e3021b591854db9fa5c39604da9e9f
     }, function (err) {
 
       $scope.imageSrc = 'err' + err;

@@ -6,7 +6,7 @@
           <!-- <ion-item>x:{{speed.x}}, y:{{speed.y}},   z:{{speed.z}}</ion-item> -->
           <!-- <ion-item>time {{speed.timestamp}} </ion-item> -->
           <ion-item ng-show='parked' style='background-color: #448AFF; font-weight: bold;font-size:20px;color: rgba(255,255,255,0.7); text-align: center'>YOU ARE CURRENTLY PARKED</ion-item>
-          <!-- <ion-item ng-hide='parked' style='background-color: red; font-weight: bold;font-size:20px;color: rgba(255,255,255,0.7); text-align: center'></ion-item> -->
+          <!-- <ion-item ng-hide='parked' style='background-color: red; font-weight: bold;font-size:20px;color: rgba(255,255,255,0.7); text-align: center'>Set Timer</ion-item> -->
           
         </ion-list>
 
@@ -16,8 +16,8 @@
           <ion-item  class="range range-positive">
             <div class="spacer" style='width:100%; padding:10px'>
               <ion-item ng-hide='timeLeftOnTimer' style='text-align:center; width :100%;'> Set timer: {{timeToPark | formatDuration}} </ion-item>
-              <input ng-model='timeToPark' type="range" value="timeToPark" min="0" max="21600000" style='width:100%'/><br>         
-              <button ng-model='timeToPark' ng-hide='timeLeftOnTimer' on-touch='parkNow(timeToPark)' class="button" >Start</button>
+              <input ng-model='timeToPark' type="range" value="timeToPark" min="0" max="1600000" style='width:100%'/><br>         
+              <button ng-model='timeToPark' ng-hide='timeLeftOnTimer' on-touch='parkNow(timeToPark)' class="button" >Start Timer</button>
               <button ng-show='timeLeftOnTimer' on-touch='resetTimer()' class='button'>Cancel</button><br>
             <button ui-sref='pHOTOUPLOAD' class="button analyze" >Analyze a Streetsign</button>
             </div>
