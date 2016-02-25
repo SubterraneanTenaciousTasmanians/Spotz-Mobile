@@ -344,6 +344,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
       factory.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 16,
         center: { lng: -122.26156639099121, lat: 37.86434903305901 },
+        disableDefaultUI: true,
       });
 
       //events will allow us to access and remove event listeners

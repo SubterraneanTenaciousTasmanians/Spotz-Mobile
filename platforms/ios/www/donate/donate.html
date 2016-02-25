@@ -1,0 +1,42 @@
+<ion-view title="Donate">
+<form stripe-form="handleStripe backgrounds">
+  <div class="stripeForm">
+
+    <div class="donationFormContainer">
+          <h1 class='spotz-title'>Support Spotz!</h1>
+
+      <div ng-show="loading" class="loading">
+        <img src="./assets/images/squares.gif"/>
+      </div>
+      <div class="entry-block">
+        <label>Name on Card</label>
+        <input type="text" ng-model="info.name" placeholder="Name On Card">
+      </div>
+
+      <div class="entry-block">
+        <label>Card Number</label>
+        <input type="number" ng-model="info.number" payments-format="card" placeholder="Card Number"/>
+      </div>
+
+      <div class="entry-block expire">
+        
+        <label>Expiration and CVC</label><br>
+        <input type="text" class="pay-small pay-date" ng-model="info.exp_month" max="2" placeholder="MM"/>
+        <input type="text" class="pay-small pay-date" ng-model="info.exp_year" max="4" placeholder="YY"/>
+        <input type="password" class="pay-small pay-date" ng-model="info.cvc" payments-validate="cvc" payments-format="cvc" payments-type-model="type" placeholder="CVC"/>
+        
+      </div>
+
+      <div class="entry-block">
+        <label>Amount: {{amount | currency}}</label>
+        <input ng-model="amount" placeholder="USD" required/>
+      </div>
+      <div class="server-msg" ng-show="showMessage">
+        <p>{{message}}</p>
+      </div>
+      <button type="submit" class="button" >Submit</button>
+      <button ui-sref='tabsController.setting' class='button'>Close</button>
+    </div>
+  </div>
+</form>
+</ion-view>

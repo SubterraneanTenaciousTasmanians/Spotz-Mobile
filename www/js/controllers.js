@@ -229,6 +229,7 @@ angular.module('app.controllers', ['spotzFilter'])
        if (confirmed) {
          $scope.spotAvailableHere(Date.now());
        };
+       $scope.resetTimer();
      });
     }, time);
   };
