@@ -43,17 +43,6 @@ angular.module('app.controllers', ['spotzFilter'])
         });
       });
 
-      // var myLatLng = new google.maps.LatLng(lat, lng);
-      //
-      // var mapOptions = {
-      //   center: myLatLng,
-      //   zoom: 15,
-      //   mapTypeId: google.maps.MapTypeId.ROADMAP,
-      // };
-      //
-      // var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-      //
-      // $scope.map = map;
       $ionicLoading.hide();
 
       console.log('current position', lat, lng);

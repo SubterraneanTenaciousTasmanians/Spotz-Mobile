@@ -1,19 +1,26 @@
-'use strict';
+
 angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
-.factory('MapFactory', ['$rootScope', '$http', '$window', '$timeout', '$cookies', 'KeyFactory', 'MapHelperFactory',  function ($rootScope, $http, $window, $timeout, $cookies, KeyFactory, MapHelperFactory) {
+.factory('MapFactory', ['$rootScope', '$http', '$window', '$timeout', '$localStorage', '$cordovaGeolocation', 'KeyFactory', 'MapHelperFactory', '$ionicPopup', '$cordovaDevice',  function ($rootScope, $http, $window, $timeout, $localStorage, $cordovaGeolocation, KeyFactory, MapHelperFactory, $ionicPopup, $cordovaDevice) {
+
+  var token = $localStorage['credentials'];
 
   //google tooltip
   var tooltip = {};
   var searchBox = {};
+
   //map view boundary
   var topRightX;
   var topRightY;
   var bottomLeftX;
   var bottomLeftY;
 
+  var minZoomLevel = 15;
+  var boxSize = 0.006;  //size of box to display features on the map
+
   //remember what we fetched
   var downloadedGridZones = {};
+  var displayedGridZones = {};
   var displayedPolygons = {};
 
   //what we return
@@ -28,7 +35,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   //===================================================
   //MAP FUNCTIONS
 
-  factory.filterFeatures = function(constraints){
+  factory.filterFeatures = function (constraints) {
     // constraints object can have permitCode text
     // or date, time, duration information for mobile preview
 
@@ -45,7 +52,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   //   MapHelperFactory.setAllFeatureColors(factory.map, MapHelperFactory.getColorOfRule, { text:text });
   // };
 
-  factory.setSelectedFeature = function(feature) {
+  factory.setSelectedFeature = function (feature) {
     //default values
     var id = -1;
     var color = '0,0,0';
@@ -77,7 +84,7 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     factory.addDeleteButtonClickHandlers();
   };
 
-  factory.addDeleteButtonClickHandlers = function() {
+  factory.addDeleteButtonClickHandlers = function () {
 
     //add listeners for the remove rule buttons
     var deleteButtons = document.getElementsByClassName('delete-rule');
@@ -118,27 +125,72 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   //===================================================
   //PARKING ZONE FUNCTIONS
 
-  factory.fetchParkingZones = function (coordinates) {
+  factory.removeFeaturesNotIn = function (coordinateArray) {
 
-    var token = $cookies.get('credentials');
-
-    //check if we already downloaded this gridzone
-
-    if (downloadedGridZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates))]) {
-      console.log('already got it');
-      return;
+    var displayedZones = {};
+    for (var i = 0; i < coordinateArray.length; i++) {
+      displayedZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinateArray[i]))] = true;
     }
 
-    //if we made it here, we need to fetch the gridzone
-    //mark coordinates as downloaded
-    downloadedGridZones[JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates))] = true;
+    //search through all download gridzones
+    for (var gridZone in downloadedGridZones) {
 
-    $http({
+      //hide any gridZones that are not in the current area
+      if (!displayedZones[gridZone]) {
+
+        downloadedGridZones[gridZone].forEach(function (feature) {
+          factory.map.data.remove(feature);
+        });
+
+        // set the display value to false so that the zones will be
+        // displayed next time they are fetched
+        displayedGridZones[gridZone] = false;
+      }
+    }
+  };
+
+  factory.fetchAndDisplayParkingZonesAt = function (coordinates) {
+
+    var gridStr = JSON.stringify(MapHelperFactory.computeGridNumbers(coordinates));
+    var newColor;
+
+    //check if we already downloaded this gridzone
+    if (downloadedGridZones[gridStr]) {
+
+      //check to see if they are displayed, if not, display them
+      if (!displayedGridZones[gridStr]) {
+        downloadedGridZones[gridStr].forEach(function (feature) {
+
+          factory.map.data.add(feature);
+
+          //color it based on the currently selected constraints ($rootScope.constraints)
+          newColor = MapHelperFactory.getColorOfRule(feature, $rootScope.constraints);
+          if (newColor) {
+            feature.setProperty('color', newColor.color);
+            feature.setProperty('show', newColor.show);
+          }
+
+        });
+
+        displayedGridZones[gridStr] = true;
+      }
+
+      //return a promise, passing array of features
+      return new Promise(function (resolve) {
+        resolve(downloadedGridZones[gridStr]);
+      });
+
+    }
+
+    //if we made it here, we need to fetch the gridzone from the server
+    //mark coordinates as downloaded
+    downloadedGridZones[gridStr] = [];
+
+    return $http({
       method:'GET',
-      url: '/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + token,
+      url: 'http://spotz.herokuapp.com/api/zones/' + coordinates[0] + '/' + coordinates[1] + '/' + token,
     })
     .success(function (polygonsFromDb) {
-
       $rootScope.$broadcast('mapLoaded');
 
       var boundary;
@@ -211,12 +263,17 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
           newFeature.setProperty('show', newColor.show);
         }
 
+        downloadedGridZones[gridStr].push(newFeature);
+
       });
+
+      //resolve promise, return array of features
+      displayedGridZones[gridStr] = true;
+      return downloadedGridZones[gridStr];
     });
   };
 
   factory.deleteParkingZone = function (polyId) {
-    var token = $cookies.get('credentials');
 
     return $http.delete('/api/zones/' + polyId + '/' + token)
     .success(function (data) {
@@ -276,137 +333,155 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     // added places library to api request.  Required for searchBar option
     $http.jsonp('https://maps.googleapis.com/maps/api/js?key=' + KeyFactory.map + '&libraries=places&callback=JSON_CALLBACK')
     .success(function () {
+      var positionOptions = {
+        enableHighAccuracy: false,
+        timeout: 10000,
+      };
 
       //=====================================================
       //we have a google.maps object here!
       //SET THE MAIN MAP OBJECTS
       //factory.map, factory.mapEvents, tooltip, searchBox
+      $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
 
-      //create a new map and center to downtown Berkeley
-      factory.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 18,
-        center: { lng: -122.26156639099121, lat: 37.86434903305901 },
-      });
-
-      //events will allow us to access and remove event listeners
-      factory.mapEvents = google.maps.event;
-
-      //save the tooltip (tooltip) in a local variable
-      tooltip = new google.maps.InfoWindow();
-
-      // Create the search box and link it to the UI element.
-      searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
-
-      //=====================================================
-      //enable tooltip display
-
-      factory.map.data.addListener('click', function (event) {
-        console.log(event.feature.getProperty('id'));
-        factory.setSelectedFeature(event.feature);
-        factory.refreshTooltipText(event.feature);
-        tooltip.setPosition(event.latLng);
-      });
-
-      //=====================================================
-      //tell the map how to set the syle of every feature
-
-      //variables for factory.map.data.setStyle function
-      //(so they aren't re-declared each time)
-      var weight;
-      var color;
-      var show;
-      var strokeOpacity;
-      var fillOpacity;
-      var rules;
-
-      //how to set the color based on the rule table
-      factory.map.data.setStyle(function (feature) {
-
-        //defaults
-        weight = 1;
-        color = feature.getProperty('color') || '0,0,0';
-        show = feature.getProperty('show') && true;
-        strokeOpacity = 1.0;
-        fillOpacity = 0.7;
-        rules = feature.getProperty('rules') || [];
-
-        //give the street sweeping a thicker line
-        if (rules[0] && rules[0].permitCode.indexOf('sweep') !== -1) {
-          weight = 3;
-        }
-
-        //hide feature
-        if (!show) {
-          strokeOpacity = 0.3;
-          fillOpacity = 0.1;
-          weight = 1;
-        }
-
-        return ({
-           strokeColor: 'rgba(' + color + ', ' + strokeOpacity + ')',
-           fillColor:'rgba(' + color  + ', ' + fillOpacity + ')',
-           strokeWeight: weight,
-         });
-      });
-
-      //=====================================================
-      //Google search bar functionality
-
-      // Bias the SearchBox results towards current map's viewport.
-      factory.map.addListener('bounds_changed', function () {
-        searchBox.setBounds(factory.map.getBounds());
-      });
-
-      // Listen for the event fired when the user enters an address
-      searchBox.addListener('places_changed', function () {
-
-        var places = searchBox.getPlaces();
-        var bounds = new google.maps.LatLngBounds();
-
-        places.forEach(function (place) {
-
-          if (place.geometry.viewport) {
-            // Only geocodes have viewport.
-            bounds.union(place.geometry.viewport);
-          } else {
-            bounds.extend(place.geometry.location);
-          }
+        //create a new map and center to downtown Berkeley
+        factory.map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: { lng: lng, lat: lat },
         });
 
-        //change the map location
-        factory.map.fitBounds(bounds);
-        //set the zoom level
-        factory.map.setZoom(18);
+        //events will allow us to access and remove event listeners
+        factory.mapEvents = google.maps.event;
 
+        //save the tooltip (tooltip) in a local variable
+        tooltip = new google.maps.InfoWindow();
+
+        // Create the search box and link it to the UI element.
+        searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+
+        //=====================================================
+        //enable tooltip display
+
+        factory.map.data.addListener('dblclick', function (event) {
+          // event.stopPropagation();
+          // console.log(event.feature.getProperty('id'));
+          factory.setSelectedFeature(event.feature);
+          factory.refreshTooltipText(event.feature);
+          tooltip.setPosition(event.latLng);
+        });
+
+        //=====================================================
+        //tell the map how to set the syle of every feature
+
+        //variables for factory.map.data.setStyle function
+        //(so they aren't re-declared each time)
+        var weight;
+        var color;
+        var show;
+        var strokeOpacity;
+        var fillOpacity;
+        var rules;
+
+        //how to set the color based on the rule table
+        factory.map.data.setStyle(function (feature) {
+
+          //defaults
+          weight = 1;
+          color = feature.getProperty('color') || '0,0,0';
+          show = feature.getProperty('show') && true;
+          strokeOpacity = 1.0;
+          fillOpacity = 0.7;
+          rules = feature.getProperty('rules') || [];
+
+          //give the street sweeping a thicker line
+          if (rules[0] && rules[0].permitCode.indexOf('sweep') !== -1) {
+            weight = 3;
+          }
+
+          //hide feature
+          if (!show) {
+            strokeOpacity = 0.3;
+            fillOpacity = 0.1;
+            weight = 1;
+          }
+
+          return ({
+             strokeColor: 'rgba(' + color + ', ' + strokeOpacity + ')',
+             fillColor:'rgba(' + color  + ', ' + fillOpacity + ')',
+             strokeWeight: weight,
+           });
+        });
+
+        //=====================================================
+        // Listener for loading in data as the map scrolls
+        function refreshDisplayedFeatures() {
+
+          console.log('refreshing features');
+          var coordinates = [factory.map.getCenter().lng(), factory.map.getCenter().lat()];
+          var boxBoundaries = [
+            [coordinates[0] + boxSize, coordinates[1] + boxSize],
+            [coordinates[0] + boxSize, coordinates[1] - boxSize],
+            [coordinates[0] - boxSize, coordinates[1] + boxSize],
+            [coordinates[0] - boxSize, coordinates[1] - boxSize],
+          ];
+          boxBoundaries.forEach(function (coordinates) {
+            factory.fetchAndDisplayParkingZonesAt(coordinates);
+          });
+
+          factory.removeFeaturesNotIn(boxBoundaries);
+        }
+
+        //add listenter to debounced version of refreshDisplayedFeatures (front end optimization)
+        factory.map.addListener('center_changed', MapHelperFactory.debounce(refreshDisplayedFeatures, 500, true));        //=====================================================
+
+        // Limit the zoom level
+        google.maps.event.addListener(factory.map, 'zoom_changed', function () {
+          if (factory.map.getZoom() < minZoomLevel) { factory.map.setZoom(minZoomLevel); }
+        });
+
+        //=====================================================
+        //paint gridlines
+        factory.map.addListener('tilesloaded', function () {
+
+          //view display bounds
+          topRightY = factory.map.getBounds().getNorthEast().lat();
+          topRightX = factory.map.getBounds().getNorthEast().lng();
+          bottomLeftY = factory.map.getBounds().getSouthWest().lat();
+          bottomLeftX = factory.map.getBounds().getSouthWest().lng();
+
+          MapHelperFactory.paintGridLines(factory.map, bottomLeftX, topRightX, bottomLeftY, topRightY);
+
+        });
+
+        //===================================================
+        //finally, we are at the end of init
+        //execute the callack passed in, returning the map object
+        callback(factory.map);
+
+      }, function err() {
+
+        goToSettings = function () {
+          var alertPopup = $ionicPopup.alert({
+            title: 'Location service is disabled',
+            template: 'Tap OK to go to settings',
+          });
+
+          alertPopup.then(function (res) {
+            if ($cordovaDevice.getPlatform() === 'Android') {
+              cordova.plugins.diagnostic.switchToLocationSettings();
+            } else {
+              cordova.plugins.diagnostic.switchToSettings();
+            }
+          });
+        };
+
+        goToSettings();
       });
-
-      //=====================================================
-      //paint gridlines
-      factory.map.addListener('tilesloaded', function () {
-
-        //view display bounds
-        topRightY = factory.map.getBounds().getNorthEast().lat();
-        topRightX = factory.map.getBounds().getNorthEast().lng();
-        bottomLeftY = factory.map.getBounds().getSouthWest().lat();
-        bottomLeftX = factory.map.getBounds().getSouthWest().lng();
-
-        MapHelperFactory.paintGridLines(factory.map, bottomLeftX, topRightX, bottomLeftY, topRightY);
-
-      });
-
-      //===================================================
-      //click handler to load data into the world grid squares
-      factory.map.addListener('click', function (event) {
-        $rootScope.$broadcast('loadMap');
-        var coordinates = [event.latLng.lng(), event.latLng.lat()];
-        factory.fetchParkingZones(coordinates);
-      });
-
-      //finally, we are at the end of init
-      //execute the callack passed in, returning the map object
-      callback(factory.map);
 
     }).error(function (data) {
+
       console.log('map load failed', data);
     });
   };

@@ -40,6 +40,12 @@
     <feature name="ImagePicker">
         <param name="ios-package" value="SOSPicker" />
     </feature>
+    <feature name="Diagnostic">
+        <param name="ios-package" value="Diagnostic" />
+    </feature>
+    <feature name="Device">
+        <param name="ios-package" value="CDVDevice" />
+    </feature>
     <name>spotzTGA</name>
     <description>
         An Ionic Framework and Cordova project.

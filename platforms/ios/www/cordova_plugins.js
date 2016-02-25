@@ -287,6 +287,22 @@ module.exports = [
         "clobbers": [
             "plugins.imagePicker"
         ]
+    },
+    {
+        "file": "plugins/cordova.plugins.diagnostic/www/ios/diagnostic.js",
+        "id": "cordova.plugins.diagnostic.Diagnostic",
+        "pluginId": "cordova.plugins.diagnostic",
+        "clobbers": [
+            "cordova.plugins.diagnostic"
+        ]
+    },
+    {
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "pluginId": "cordova-plugin-device",
+        "clobbers": [
+            "device"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -299,7 +315,9 @@ module.exports.metadata =
     "cordova-plugin-geolocation": "2.1.0",
     "cordova-plugin-inappbrowser": "1.3.1-dev",
     "cordova-plugin-file-transfer": "1.5.0",
-    "com.synconset.imagepicker": "1.0.7"
+    "com.synconset.imagepicker": "1.0.7",
+    "cordova.plugins.diagnostic": "2.3.10",
+    "cordova-plugin-device": "1.1.1"
 }
 // BOTTOM OF METADATA
 });

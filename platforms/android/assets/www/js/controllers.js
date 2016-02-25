@@ -11,7 +11,6 @@ angular.module('app.controllers', ['spotzFilter'])
     }
 
     $cordovaKeyboard.hideAccesoryBar(true);
-
     $cordovaKeyboard.disableScroll(true);
     $cordovaKeyboard.close();
 
@@ -44,17 +43,6 @@ angular.module('app.controllers', ['spotzFilter'])
         });
       });
 
-      // var myLatLng = new google.maps.LatLng(lat, lng);
-      //
-      // var mapOptions = {
-      //   center: myLatLng,
-      //   zoom: 15,
-      //   mapTypeId: google.maps.MapTypeId.ROADMAP,
-      // };
-      //
-      // var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-      //
-      // $scope.map = map;
       $ionicLoading.hide();
 
       console.log('current position', lat, lng);
@@ -144,7 +132,8 @@ angular.module('app.controllers', ['spotzFilter'])
   $scope.newSpotAvail = '';
   $scope.parked = false;
   $scope.parkingTest = '';
-  $scope.timeLeftOnTimer;
+  $scope.timeLeftOnTimer = 0;
+  $scope.timeToPark = 0;
 
   $scope.spotAvailableHere = function (timestamp) {
     var positionOptions = {
