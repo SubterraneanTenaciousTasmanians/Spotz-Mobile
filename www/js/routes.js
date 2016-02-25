@@ -56,14 +56,10 @@ angular.module('app.routes', [])
         },
       },
     })
-    .state('tabsController.social', {
+    .state('donate', {
       url: '/page14',
-      views: {
-        tab3: {
-          templateUrl: 'templates/social.html',
-          controller: 'socialCtrl',
-        },
-      },
+      templateUrl: 'donate/donate.html',
+      controller: 'donateCtrl',
     });
 
   // if none of the above states are matched, use this as the fallback
