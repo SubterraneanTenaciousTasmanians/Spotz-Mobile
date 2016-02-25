@@ -1,76 +1,71 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
-  //Grab token
-  var token = $localStorage['credentials'];
-
-  //User street input
-  $scope.otherStreet = function () {
-    if (!token) {
-      $state.go('login');
-    }
-
-    $cordovaKeyboard.hideAccesoryBar(true);
-    $cordovaKeyboard.disableScroll(true);
-    $cordovaKeyboard.close();
-
-    var isVisible = $cordovaKeyboard.isVisible();
-  };
-
-  //Geolocation service
-  $ionicPlatform.ready(function () {
-
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
-    });
-
-    var positionOptions = {
-      enableHighAccuracy: false,
-      timeout: 10000,
-    };
-
-    $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      var lat = position.coords.latitude;
-      var lng = position.coords.longitude;
-      MapFactory.init(function (map) {
-        console.log('get current position', token);
-        if (!token) {
-          $state.go('login');
-        }
-
-        MapFactory.loadColors(function () {
-          MapFactory.fetchParkingZones([lng, lat, token]);
-        });
-      });
-
-      $ionicLoading.hide();
-
-      console.log('current position', lat, lng);
-      google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-
-        var marker = new google.maps.Marker({
-          map: $scope.map,
-          enableHighAccuracy: false,
-          animation: google.maps.Animation.DROP,
-          position: myLatLng,
-        });
-      });
-
-      console.log('get current position', token);
-      $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
-      console.log('POLYGONS BABY', err, data);
-    });
-
-    }, function (err) {
-
-      $ionicLoading.hide();
-      console.log('error in initializing the map: ', err);
-    });
-  });
-
-  //Launch Navigation Service
-},
-])
+// .controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+//   //Grab token
+//   var token = $localStorage['credentials'];
+//
+//   //User street input
+//   $scope.otherStreet = function () {
+//     if (!token) {
+//       $state.go('login');
+//     }
+//
+//     $cordovaKeyboard.hideAccesoryBar(true);
+//     $cordovaKeyboard.disableScroll(true);
+//     $cordovaKeyboard.close();
+//
+//     var isVisible = $cordovaKeyboard.isVisible();
+//   };
+//
+//   //Geolocation service
+//   $ionicPlatform.ready(function () {
+//
+//
+//     var positionOptions = {
+//       enableHighAccuracy: false,
+//       timeout: 10000,
+//     };
+//
+//     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
+//       var lat = position.coords.latitude;
+//       var lng = position.coords.longitude;
+//       MapFactory.init(function (map) {
+//         console.log('get current position', token);
+//         if (!token) {
+//           $state.go('login');
+//         }
+//
+//         MapFactory.loadColors(function () {
+//           MapFactory.fetchParkingZones([lng, lat, token]);
+//         });
+//       });
+//
+//
+//       console.log('current position', lat, lng);
+//       google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+//
+//         var marker = new google.maps.Marker({
+//           map: $scope.map,
+//           enableHighAccuracy: false,
+//           animation: google.maps.Animation.DROP,
+//           position: myLatLng,
+//         });
+//       });
+//
+//       console.log('get current position', token);
+//       $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
+//       console.log('POLYGONS BABY', err, data);
+//     });
+//
+//     }, function (err) {
+//
+//       console.log('error in initializing the map: ', err);
+//     });
+//   });
+//
+//   //Launch Navigation Service
+// },
+// ])
 
 .controller('loginCtrl', ['$scope', '$localStorage', '$state', 'signinFactory', function ($scope, $localStorage, $state, signinFactory) {
   $scope.message = '';
@@ -144,7 +139,7 @@ angular.module('app.controllers', ['spotzFilter'])
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       $scope.newSpotAvail = Math.floor(lat) + '/' + Math.floor(lng) + ': ' + timestamp;
-      
+
 
       $http.post('https://spotz.herokuapp.com/parkingSpot', $scope.newSpotAvail).then(function (err, data) {
         $scope.parkingTest = err + ': ' + data;
@@ -330,15 +325,12 @@ angular.module('app.controllers', ['spotzFilter'])
   };
 
   $scope.sendPhoto = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
-    });
+
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
     };
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      $ionicLoading.hide();
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       var coordinates = JSON.stringify([lat, lng]);
@@ -346,24 +338,16 @@ angular.module('app.controllers', ['spotzFilter'])
       $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
         $scope.test = data;
         $scope.takePhoto = false;
-        $ionicLoading.show({
-          template: '<div class="ion-ios-checkmark"></div><br/>Thank you!',
-        });
         $timeout(function () {
-          $ionicLoading.hide();
           $state.go('tabsController.parking');
         }, 1500);
       }, function error(err) {
 
-        $ionicLoading.hide();
       });
     });
   };
 
   $scope.ocrad = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analyzing!',
-    });
     OCRAD(document.getElementById('picture'), function (text) {
       var regexed = text.replace(/[^a-zA-Z0-9:\s]/g, '');
       regexed = regexed.replace(/(\r\n|\n|\r)/g, ' ');
@@ -388,10 +372,8 @@ angular.module('app.controllers', ['spotzFilter'])
         $scope.imageSrc = regexed;
       });
 
-      $ionicLoading.hide();
     }, function (err) {
 
-      $ionicLoading.hide();
       $scope.imageSrc = 'err' + err;
     });
   };
