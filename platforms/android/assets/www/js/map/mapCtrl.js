@@ -49,6 +49,8 @@ angular.module('spotz.map', ['MapServices'])
     });
 
     $ionicPlatform.on('resume', function () {
+      MapFactory.clearDisplayed();
+
       //rock on
       MapFactory.init(function (map) {
         $scope.mapLoading = true;
