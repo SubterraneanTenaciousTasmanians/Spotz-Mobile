@@ -21,7 +21,7 @@ angular.module('app.controllers', ['spotzFilter'])
   $ionicPlatform.ready(function () {
 
     $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
+      template: '<ion-spinner icon="bubbles"><br/>Acquiring location!</ion-spinner>',
     });
 
     var positionOptions = {
@@ -140,11 +140,14 @@ angular.module('app.controllers', ['spotzFilter'])
       enableHighAccuracy: false,
       timeout: 10000,
     };
+    $ionicPopup.confirm({
+      title: 'i threw a debugger in it',
+    });
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       $scope.newSpotAvail = Math.floor(lat) + '/' + Math.floor(lng) + ': ' + timestamp;
-      
+      $ionicPopup.alert({ title: $scope.newSpotAvail });
 
       $http.post('https://spotz.herokuapp.com/parkingSpot', $scope.newSpotAvail).then(function (err, data) {
         $scope.parkingTest = err + ': ' + data;
@@ -189,21 +192,15 @@ angular.module('app.controllers', ['spotzFilter'])
   function updateTimer(time) {
     var current = time;
     var x;
-    $scope.stopTimer = $interval(function () {
+    stopTimer = $interval(function () {
 
       current -= 1000;
       if (current < 1000) {
-        $interval.cancel($scope.stopTimer);
+        $interval.cancel(stopTimer);
       };
 
       $scope.timeLeftOnTimer = formatMillisecs(current);
     }, 1000);
-  };
-
-  $scope.resetTimer = function(){
-    $interval.cancel($scope.stopTimer);
-    $scope.timeLeftOnTimer = 0;
-    $scope.timeToPark = '';
   };
 
   $scope.timerCountdown = function (res, time) {
@@ -218,7 +215,6 @@ angular.module('app.controllers', ['spotzFilter'])
        if (confirmed) {
          $scope.spotAvailableHere(Date.now());
        };
-       $scope.resetTimer();
      });
     }, time);
   };
@@ -247,13 +243,15 @@ angular.module('app.controllers', ['spotzFilter'])
         var Y = result.y;
         var Z = result.z;
         var timestamp = result.timestamp;
-        // $scope.speed = result;
+        $scope.speed = result;
 
         // if acceleration exceeds a limit
         if (result.x > 50 || result.y > 50 || result.z > 50) {
           // mark current position as available for parking
+          $ionicPopup.confirm({
+           title: result.timestamp,
+         });
           $scope.spotAvailableHere(timestamp);
-          $scope.resetTimer();
         }
       });
 
@@ -269,12 +267,22 @@ angular.module('app.controllers', ['spotzFilter'])
   }, false);
 })
 
-.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$ionicLoading', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $ionicLoading, $cordovaGeolocation) {
+.controller('pHOTOUPLOADCtrl', ['$http', '$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', '$cordovaGeolocation', function ($http, $timeout, $scope, $state, $cordovaCamera, $ionicPlatform, $cordovaGeolocation) {
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
+  $scope.keyboardDown = true;
+
+  $scope.buttonToggle = function(){
+    console.log("BUTTON TOGGLE FIRED OFF");
+    $scope.keyboardDown = !$scope.keyboardDown;
+  };
+  cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+  // window.addEventListener('native.keyboardshow', $scope.buttonToggle);
+  // window.addEventListener('native.keyboardhide', $scope.buttonToggle);
+
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,
@@ -330,15 +338,11 @@ angular.module('app.controllers', ['spotzFilter'])
   };
 
   $scope.sendPhoto = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!',
-    });
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
     };
     $cordovaGeolocation.getCurrentPosition(positionOptions).then(function (position) {
-      $ionicLoading.hide();
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       var coordinates = JSON.stringify([lat, lng]);
@@ -346,24 +350,15 @@ angular.module('app.controllers', ['spotzFilter'])
       $http.post('https://spotz.herokuapp.com/api/photo', { post: $scope.imageSrc, coordinates: coordinates }).then(function success(data) {
         $scope.test = data;
         $scope.takePhoto = false;
-        $ionicLoading.show({
-          template: '<div class="ion-ios-checkmark"></div><br/>Thank you!',
-        });
         $timeout(function () {
-          $ionicLoading.hide();
           $state.go('tabsController.parking');
         }, 1500);
       }, function error(err) {
-
-        $ionicLoading.hide();
       });
     });
   };
 
   $scope.ocrad = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Analyzing!',
-    });
     OCRAD(document.getElementById('picture'), function (text) {
       var regexed = text.replace(/[^a-zA-Z0-9:\s]/g, '');
       regexed = regexed.replace(/(\r\n|\n|\r)/g, ' ');
@@ -387,11 +382,8 @@ angular.module('app.controllers', ['spotzFilter'])
         $scope.analyzed = true;
         $scope.imageSrc = regexed;
       });
-
-      $ionicLoading.hide();
     }, function (err) {
 
-      $ionicLoading.hide();
       $scope.imageSrc = 'err' + err;
     });
   };
