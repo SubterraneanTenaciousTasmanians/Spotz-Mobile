@@ -1,6 +1,6 @@
 angular.module('app.controllers', ['spotzFilter'])
 
-.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicLoading', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $http, MapFactory) {
+.controller('map/NearMeCtrl', ['$state', '$scope', '$cordovaKeyboard', '$localStorage', '$cordovaGeolocation', '$ionicPlatform', '$http', 'MapFactory', function ($state, $scope, $cordovaKeyboard, $localStorage, $cordovaGeolocation, $ionicPlatform, $http, MapFactory) {
   //Grab token
   var token = $localStorage['credentials'];
 
@@ -20,10 +20,6 @@ angular.module('app.controllers', ['spotzFilter'])
   //Geolocation service
   $ionicPlatform.ready(function () {
 
-    $ionicLoading.show({
-      template: '<ion-spinner icon="bubbles"><br/>Acquiring location!</ion-spinner>',
-    });
-
     var positionOptions = {
       enableHighAccuracy: false,
       timeout: 10000,
@@ -33,7 +29,6 @@ angular.module('app.controllers', ['spotzFilter'])
       var lat = position.coords.latitude;
       var lng = position.coords.longitude;
       MapFactory.init(function (map) {
-        console.log('get current position', token);
         if (!token) {
           $state.go('login');
         }
@@ -43,9 +38,6 @@ angular.module('app.controllers', ['spotzFilter'])
         });
       });
 
-      $ionicLoading.hide();
-
-      console.log('current position', lat, lng);
       google.maps.event.addListenerOnce($scope.map, 'idle', function () {
 
         var marker = new google.maps.Marker({
@@ -56,14 +48,12 @@ angular.module('app.controllers', ['spotzFilter'])
         });
       });
 
-      console.log('get current position', token);
       $http.get('https://spotz.herokuapp.com/api/zones/' + lat + '/' + lng + '/' + token).then(function (err, data) {
       console.log('POLYGONS BABY', err, data);
     });
 
     }, function (err) {
 
-      $ionicLoading.hide();
       console.log('error in initializing the map: ', err);
     });
   });
