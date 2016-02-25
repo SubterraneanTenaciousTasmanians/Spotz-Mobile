@@ -50,3 +50,6 @@ a .item-content {
 .button.analyze {
   margin-top:30px;
 }
+.keyboard-body .hide-with-keyboard{
+  display:none !important;
+}

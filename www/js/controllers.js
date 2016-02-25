@@ -273,6 +273,16 @@ angular.module('app.controllers', ['spotzFilter'])
   $scope.imageSrc = '';
   $scope.analyzed = false;
   $scope.useOcrad = false;
+  $scope.keyboardDown = true;
+
+  $scope.buttonToggle = function(){
+    console.log("BUTTON TOGGLE FIRED OFF");
+    $scope.keyboardDown = !$scope.keyboardDown;
+  };
+  cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+  // window.addEventListener('native.keyboardshow', $scope.buttonToggle);
+  // window.addEventListener('native.keyboardhide', $scope.buttonToggle);
+
   $scope.choosePhoto = function () {
     var options = {
     quality: 100,

@@ -46,6 +46,9 @@
     <feature name="Device">
         <param name="ios-package" value="CDVDevice" />
     </feature>
+    <feature name="Keyboard">
+        <param name="ios-package" onload="true" value="IonicKeyboard" />
+    </feature>
     <name>spotzTGA</name>
     <description>
         An Ionic Framework and Cordova project.
@@ -63,4 +66,5 @@
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
+    <preference name="Fullscreen" value="false" />
 </widget>
