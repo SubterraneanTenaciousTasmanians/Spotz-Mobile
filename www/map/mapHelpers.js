@@ -59,7 +59,6 @@ angular.module('MapHelpers', ['AdminServices'])
     var numOfRules;
 
     if (!event) {
-      console.log('failed to create the toooltip, no event given');
       return;
     }
 
@@ -169,11 +168,7 @@ angular.module('MapHelpers', ['AdminServices'])
         // If user clicked a Permit Zone polygon (changed from 'mouse over')
         // thus polygonRuls.days will be (M, T, W, Th, F and possibly Sat)
 
-        // console.log('polygon cost: ', polygonRules.costPerHour);
-
-        // console.log('\n\nRules:', polygonRules);
         var daysArray = polygonRules.days.split(',');  //Grab the permit days and put them in an array
-        //console.log('Days array', daysArray);
 
         parkingMessage = '';
 
@@ -211,7 +206,6 @@ angular.module('MapHelpers', ['AdminServices'])
     */
 
     if(!contraints){
-      console.log('cannot determine mobile preview without constraints');
       return;
     }
 
@@ -254,8 +248,6 @@ angular.module('MapHelpers', ['AdminServices'])
           // convert the number strings to integers
           convStartTime = Number(convertTime(poly.rules[i].startTime));
           convEndTime = Number(convertTime(poly.rules[i].endTime));
-
-          // console.log('\n\n\nthe rules of each line: ', poly.rules[0]);
 
           // All Street sweeping day possiblilities
           var streetSweepingObj = {
@@ -361,7 +353,6 @@ angular.module('MapHelpers', ['AdminServices'])
 
                 // check possible situation that its not permit zone hours, but it is parking meter hours
                 if (poly.rules[i].costPerHour > 0  && ((convPreviewTime > convStartTime) && (convPreviewTime < convEndTime)) ) {
-                  // console.log('Weekday: parking outside of permit time, but within METER time, so paint the permit zone orange');
                   return {
                     color: color.orange,  //parking during meter hours
                     show: true,
@@ -387,7 +378,6 @@ angular.module('MapHelpers', ['AdminServices'])
                 // If there is a meter paint it orange
                 if ((poly.rules[i].costPerHour > 0)  && ((convPreviewTime > convStartTime) && (convPreviewTime < convEndTime)) ) {
                   // parkingMessage = 'You can park here for two hours only AND there is a meter';
-                  // console.log('There is a meter here, but may / may not be in permit zones.', poly.id);
                   return {
                     color: color.orange,
                     show: true,
@@ -455,7 +445,6 @@ angular.module('MapHelpers', ['AdminServices'])
       return;
     }
     // loop through each polygon/line and change its color
-    console.log(map);
     map.data.forEach(function (feature) {
       color = helperFactory.getColorOfRule(feature, options);
       if (color) {

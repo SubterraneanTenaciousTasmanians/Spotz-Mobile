@@ -7,8 +7,6 @@ angular.module('signupServices', [])
     return $http.post('https://spotz.herokuapp.com/auth/signup', userinfo).then(function success(response) {
       return response;
     }, function error(err) {
-
-      console.log('err', err);
       return err;
     });
   };
