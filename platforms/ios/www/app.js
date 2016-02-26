@@ -5,8 +5,8 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic', 'ngStorage', 'ngCordovaOauth', 'angularPayments', 'app.controllers', 'app.routes', 
-  'app.services', 'app.directives', 'ngCordova', 'spotz.map', 'MapHelpers', 'MapServices', 'spotz.donate', 'DonateServices', 
+angular.module('app', ['ionic', 'ngStorage', 'ngCordovaOauth', 'angularPayments', 'spotz.setting', 'app.routes', 
+  'settingServices', 'app.directives', 'ngCordova', 'spotz.map', 'MapHelpers', 'MapServices', 'spotz.donate', 'DonateServices', 
   'spotz.parking', 'parkingService', 'timerService', 'spotz.photoUpload', 'photoUploadService', 'spotz.signin', 'signinServices', 
   'spotz.signup', 'signupServices'])
 

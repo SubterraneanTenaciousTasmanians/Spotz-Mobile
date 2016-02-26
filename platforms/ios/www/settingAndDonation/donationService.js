@@ -1,6 +1,6 @@
-angular.module('app.services', [])
+angular.module('settingServices', [])
 
-.service('SettingsService', ['$http', function ($http) {
+.factory('SettingsService', ['$http', function ($http) {
   var factory = {};
 
   factory.requestToken = function (info) {

@@ -66,8 +66,6 @@ angular.module('spotz.photoUpload', ['photoUploadService'])
         $timeout(function () {
           $state.go('tabsController.parking');
         }, 1100);
-      }, function error(err) {
-
       });
     });
   };

@@ -21,7 +21,7 @@ angular.module('app.routes', [])
     .state('tabsController', {
       url: '/page1',
       abstract:true,
-      templateUrl: 'templates/tabsController.html',
+      templateUrl: 'tabs/tabsController.html',
     })
     .state('login', {
       url: '/page5',
@@ -51,7 +51,7 @@ angular.module('app.routes', [])
       url: '/page13',
       views: {
         tab10: {
-          templateUrl: 'templates/setting.html',
+          templateUrl: 'settingAndDonation/setting.html',
           controller: 'settingCtrl',
         },
       },

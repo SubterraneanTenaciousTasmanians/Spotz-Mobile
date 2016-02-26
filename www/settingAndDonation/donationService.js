@@ -1,13 +1,11 @@
-'use strict';
-angular.module('DonateServices', [])
+angular.module('settingServices', [])
 
-.factory('DonateFactory', ['$http', function ($http) {
-
+.factory('SettingsService', ['$http', function ($http) {
   var factory = {};
 
   factory.requestToken = function (info) {
-    return $http.post('/donate', info).then(function (data) {
-        if (data.status === 'OK') {
+    return $http.post('https://spotz.herokuapp.com/donate', info).then(function (data) {
+        if (data.status == 'OK') {
           return { paid: true,
             message: data.message,
           };
@@ -17,6 +15,8 @@ angular.module('DonateServices', [])
           };
         }
 
+      }).catch(function (err) {
+        console.error('error', err);
       });
   };
 
