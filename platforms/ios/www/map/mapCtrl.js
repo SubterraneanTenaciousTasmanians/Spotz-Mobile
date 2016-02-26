@@ -32,7 +32,6 @@ angular.module('spotz.map', ['MapServices'])
     });
 
     $scope.deleteRule = function (zoneId, ruleId) {
-      console.log('deleting rule', ruleId, 'for', zoneId);
       MapFactory.deleteRule(zoneId, ruleId);
     };
 
