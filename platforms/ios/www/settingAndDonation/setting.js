@@ -1,4 +1,4 @@
-angular.module('app.controllers', ['spotzFilter'])
+angular.module('spotz.setting', ['spotzFilter'])
 
 .controller('settingCtrl', ['$state', '$scope', '$localStorage', 'SettingsService', function ($state, $scope, $localStorage, SettingsService) {
   $scope.showForm = false;
