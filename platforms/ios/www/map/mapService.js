@@ -27,7 +27,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   var factory = {};
 
   $rootScope.$on('logOut', function () {
-    console.log('clearing downloaded info');
     downloadedGridZones = {};
     displayedPolygons = {};
   });
@@ -36,10 +35,8 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
   //MAP FUNCTIONS
 
   factory.clearDisplayed = function () {
-    console.log('CLEARING');
     displayedGridZones = {};
     displayedPolygons = {};
-    console.log('CLEARED', displayedGridZones, displayedPolygons);
   };
 
   factory.filterFeatures = function (constraints) {
@@ -47,7 +44,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     // or date, time, duration information for mobile preview
 
     if (!constraints) {
-      console.log('you need to supply contraints');
       return;
     }
 
@@ -98,7 +94,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     for (var i = 0; i < deleteButtons.length; i++) {
 
       factory.mapEvents.addDomListener(deleteButtons[i], 'click', function () {
-        console.log('Map was clicked!', this.dataset.polyid, this.dataset.ruleid);
         if (confirm('Are you sure you want to delete this rule?')) {
           factory.deleteRule(this.dataset.polyid, this.dataset.ruleid).then(function (rules) {
             factory.selectedFeature.feature.setProperty('rules', rules);
@@ -113,14 +108,11 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
     var deletePolygon = document.getElementsByClassName('delete-polygon');
 
     factory.mapEvents.addDomListener(deletePolygon[0], 'click', function () {
-      console.log('Map was clicked!', this.dataset.polyid);
       if (confirm('Are you sure you want to delete this polygon?')) {
         factory.deleteParkingZone(this.dataset.polyid).then(function (succeeded) {
           if (succeeded) {
-            console.log('removing', factory.selectedFeature.feature);
             factory.map.data.remove(factory.selectedFeature.feature);
             tooltip.close();
-            console.log('delete complete');
           } else {
             console.log('delete failed');
           }
@@ -210,7 +202,6 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
         //check if we already displayed this polygon
         if (displayedPolygons[poly.id]) {
-          console.log('already displayed this polygon');
           return;
         }
 
@@ -284,11 +275,9 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
     return $http.delete('/api/zones/' + polyId + '/' + token)
     .success(function (data) {
-      console.log('deleted!', data);
       return true;
     })
     .error(function (err) {
-      console.log('delete failed', err);
       return false;
     });
   };
@@ -315,18 +304,11 @@ angular.module('MapServices', ['AdminServices', 'MapHelpers'])
 
   factory.deleteRule = function (polyId, ruleId) {
 
-    console.log('sending of request to detach rule');
     var token = $cookies.get('credentials');
 
     return $http({
       method:'DELETE',
       url:'/api/rule/' + polyId + '/' + ruleId + '/' + token,
-    })
-    .success(function (data) {
-      console.log('delete rule succeeded', data);
-    })
-    .error(function (err) {
-      console.log('delete rule failed', err);
     });
   };
 
