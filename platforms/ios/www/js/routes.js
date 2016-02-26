@@ -25,12 +25,12 @@ angular.module('app.routes', [])
     })
     .state('login', {
       url: '/page5',
-      templateUrl: 'templates/login.html',
+      templateUrl: 'signin/login.html',
       controller: 'loginCtrl',
     })
     .state('signup', {
       url: '/page6',
-      templateUrl: 'templates/signup.html',
+      templateUrl: 'signup/signup.html',
       controller: 'signupCtrl',
     })
     .state('tabsController.parking', {
@@ -44,7 +44,7 @@ angular.module('app.routes', [])
     })
     .state('pHOTOUPLOAD', {
       url: '/page12',
-      templateUrl: 'templates/pHOTOUPLOAD.html',
+      templateUrl: 'photoUpload/pHOTOUPLOAD.html',
       controller: 'pHOTOUPLOADCtrl',
     })
     .state('tabsController.setting', {

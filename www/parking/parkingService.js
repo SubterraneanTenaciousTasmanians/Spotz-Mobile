@@ -2,7 +2,7 @@
 
 angular.module('parkingService', [])
 
-.factory('parkingFactory',[function($http) {
+.factory('parkingFactory',['$http', function($http) {
 	var factory = {};
 
 	factory.postParkingSpot = function (parkingSpot) {
