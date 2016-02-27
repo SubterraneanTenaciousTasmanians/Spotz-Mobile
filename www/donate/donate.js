@@ -16,21 +16,17 @@ angular.module('spotz.donate', ['DonateServices'])
 
   $scope.stripeCallback = function (status, response) {
     $scope.loading = !$scope.loading;
-    if (response.error) {
-      // there was an error. Fix it.
-      console.log('ERROR', response.error);
-    } else {
-      $scope.transaction = {
-        token: response.id,
-        amount: $scope.amount,
-      };
-      DonateFactory.requestToken($scope.transaction).then(function (response) {
-        $scope.loading     = !$scope.loading;
-        $scope.showMessage = !$scope.showMessage;
-        $scope.paid        = response.paid;
-        $scope.message     = response.message;
-      });
-    }
+ 
+    $scope.transaction = {
+      token: response.id,
+      amount: $scope.amount,
+    };
+    DonateFactory.requestToken($scope.transaction).then(function (response) {
+      $scope.loading     = !$scope.loading;
+      $scope.showMessage = !$scope.showMessage;
+      $scope.paid        = response.paid;
+      $scope.message     = response.message;
+    });
   };
 
   // nothing yet
