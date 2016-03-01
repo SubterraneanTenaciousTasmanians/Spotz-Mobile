@@ -13,16 +13,7 @@
   color:  #76b52d;
   opacity: 0.7;
 }
-a .item-content {
-  /*margin:0;*/
-}
-.item-complex .item-content {
-  /*background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%);
-  padding:10px 10px 10px 10px;
-  text-align: center;
-  margin: 0 auto;
-  width:75%;*/
-}
+
 
 .backgrounds .button {
   background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%);
