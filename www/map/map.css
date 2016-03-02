@@ -15,15 +15,7 @@ html, body {
   font-size:18px;
 }
 
-.searchBar{
-  /*position: absolute;
-  top: 100px;
-  left: 300px;*/
-}
-
 .searchBar {
-  /*background-color: rgba(0, 0, 0, 0.7);*/
-  /*background-color: blue;*/
   position: absolute;
   top: 48px;
   left: 300px;
@@ -45,11 +37,6 @@ html, body {
   text-align: center;
   color: whitesmoke;
 }
-
-/*.searchBar input{
-  padding:15px;
-  font-size:23px;
-}*/
 
 .searchBar p {
   margin: 5px;
