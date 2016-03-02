@@ -4,7 +4,6 @@ angular.module('parkingService', [])
 
 .factory('parkingFactory',[function() {
 	var factory = {};
-	console.log('ring of fire')
 	factory.formatMillisecs = function (milliseconds) {
 
 		var result = '';
