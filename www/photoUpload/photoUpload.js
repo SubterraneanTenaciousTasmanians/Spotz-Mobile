@@ -2,8 +2,8 @@
 angular.module('spotz.photoUpload', ['photoUploadService'])
 
 .controller('pHOTOUPLOADCtrl', ['$timeout', '$scope', '$state', '$cordovaCamera', '$ionicPlatform', 
-  '$ionicLoading', '$cordovaGeolocation', 'photoUploadFactory', function ($timeout, $scope, $state, $cordovaCamera, $ionicPlatform, 
-    $ionicLoading, $cordovaGeolocation, photoUploadFactory) {
+  '$cordovaGeolocation', 'photoUploadFactory', function ($timeout, $scope, $state, $cordovaCamera, $ionicPlatform, 
+    $cordovaGeolocation, photoUploadFactory) {
 
   $scope.takePhoto = true;
   $scope.srcImage = 'assets/noImage.png';
