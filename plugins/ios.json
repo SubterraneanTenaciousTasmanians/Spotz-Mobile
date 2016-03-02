@@ -13,6 +13,9 @@
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "spotzTGA"
         },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
+        },
         "cordova-plugin-device-motion": {
             "PACKAGE_NAME": "spotzTGA"
         },
@@ -21,6 +24,21 @@
         },
         "cordova-plugin-geolocation": {
             "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "com.synconset.imagepicker": {
+            "PACKAGE_NAME": "spotzTGA"
+        },
+        "cordova.plugins.diagnostic": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.comspotzTGA"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.spotz.herokuapp.com.spotzTGA"
         }
     },
     "dependent_plugins": {}

@@ -1,0 +1,46 @@
+.backgrounds {
+/*  background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%);
+*/}
+.backgrounds h1 {
+  margin: 10px 0 10px 0;
+
+}
+
+.spotz-title {
+  font-size:45px;
+  margin:20px 0 10px 0;
+  text-align: center;
+  color:  #76b52d;
+  opacity: 0.7;
+}
+
+
+.backgrounds .button {
+  background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%);
+  font-weight: bold;
+  font-size:20px;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  width:100%;
+  height:10px;
+}
+.entry-block.submit{
+  height:5px;
+}
+
+.bar .title {
+  background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%);
+  margin:0;
+  padding:0;
+}
+.bar.bar-stable .title {
+  font-size: 25px;
+  font-weight:bold;
+  color: rgba(255,255,255,0.9);
+}
+.button.analyze {
+  margin-top:30px;
+}
+.keyboard-body .hide-with-keyboard{
+  display:none !important;
+}

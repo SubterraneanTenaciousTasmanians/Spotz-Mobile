@@ -49,21 +49,28 @@
       </dict>
     </dict>
     <key>CFBundleIdentifier</key>
-    <string>spotzTGA</string>
+    <string>com.spotz.herokuapp.comspotzTGA</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
     <string>${PRODUCT_NAME}</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.0.1</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleVersion</key>
     <string>0.0.1</string>
-    <key>CFBundleShortVersionString</key>
-    <string>0.0.1</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSAllowsArbitraryLoads</key>
+      <true/>
+    </dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>This app will now only track your location when the screen is on and the app is displayed.</string>
     <key>NSMainNibFile</key>
     <string/>
     <key>NSMainNibFile~ipad</key>
@@ -171,12 +178,7 @@
         <string>{768, 1024}</string>
       </dict>
     </array>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-      <key>NSAllowsArbitraryLoads</key>
-      <true/>
-    </dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string/>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>This app requires constant access to your location in order to track your position, even when the screen is off.</string>
   </dict>
 </plist>

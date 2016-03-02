@@ -1,0 +1,86 @@
+.stripeForm {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
+.donationFormContainer {
+    width:100%;
+    text-align:center;
+}
+
+.stripeForm .pay-small{
+
+  display: inline;
+}
+
+.stripeForm input{
+    padding: 5px;
+    width: 95%;
+    height: 40px;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    margin: 0px auto 2px;
+    display: block;
+    text-align: center;
+}
+
+.stripeForm .pay-date{
+  width:30%;
+}
+
+.stripeForm h1{
+  margin-top: 50px;
+  font-size: 50px;
+  text-align: center;
+  color:#76b52d;
+  font-weight: bold;
+}
+
+.stripeForm .button{
+  width: 95%;
+  border-radius: 2px;
+  color: rgba(255,255,255,0.9);
+  font-weight: bold;
+  font-size: 30px;
+  margin: 5px 0px;
+  cursor: pointer;
+  height: 15px;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#76b52d+0,8ab66b+44,398235+100 */
+  background: #76b52d; /* Old browsers */
+  background: -moz-linear-gradient(top,  #76b52d 0%, #8ab66b 44%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #76b52d 0%,#8ab66b 44%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #76b52d 0%,#8ab66b 44%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#76b52d', endColorstr='#398235',GradientType=0 ); /* IE6-9 */
+  background: linear-gradient(to bottom, #76b52d 0%,#c3dc90 100%); 
+}
+
+.stripeForm .submit:active{
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#398235+0,8ab66b+56,76b52d+100 */
+  background: #398235; /* Old browsers */
+  background: -moz-linear-gradient(top,  #398235 0%, #8ab66b 56%, #76b52d 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #398235 0%,#8ab66b 56%,#76b52d 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #398235 0%,#8ab66b 56%,#76b52d 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#398235', endColorstr='#76b52d',GradientType=0 ); /* IE6-9 */
+}
+
+.close{
+  font-size: 40px;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  color:#343030;
+}
+
+.server-msg {
+  background-color: rgba(255, 0, 0, 0.54);
+}
+
+.loading {
+  position: absolute;
+  padding: 44% 22%;
+  background-color: rgba(255, 253, 246, 0.6);
+}
+.entry-block.expire {
+  
+}

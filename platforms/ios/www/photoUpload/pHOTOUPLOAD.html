@@ -1,0 +1,22 @@
+<ion-view title="PHOTO UPLOAD">
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+      <!-- <div style="line-height: 250px; border: 1px solid rgb(238, 238, 238); border-radius: 3px; text-align: center; background-color: rgb(255, 255, 255);"> -->
+      <div style="height: 300px; width:300px; border-radius: 3px; text-align: center; margin: 0 auto;">
+        <img id="picture" ng-src="{{srcImage}}"/>
+      </div>
+      <div>
+        <form class="list" ng-hide="takePhoto">
+          <label class="item item-input">
+            <input type="text" value="{{imageSrc}}"/>
+          </label>
+        </form>
+      </div>
+      <div class="button-bar item-borderless hide-on-keyboard-open" ng-if="keyboardDown">
+        <button class="button button-stable button-block" ng-show="analyzed" on-tap="sendPhoto()">Submit</button>
+        <button class="button button-stable button-block" ng-show="useOcrad" on-tap="ocrad()">Analyze</button>
+        <button class="button button-stable button-block" ng-hide="takePhoto" on-tap="cancel()">Cancel</button>
+        <button class="button button-stable button-block" ng-show="takePhoto" on-tap="choosePhoto()">Choose Photo</button>
+        <button class="button button-stable button-block" ng-show="takePhoto" on-tap="takePicture()">Take Photo</button>
+      </div>
+    </ion-content>
+</ion-view>

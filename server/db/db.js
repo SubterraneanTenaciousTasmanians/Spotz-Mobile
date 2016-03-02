@@ -56,6 +56,18 @@ db.knex.schema.hasTable('streetSweeping').then(function (exists) {
 //   console.log('yay');
 // });
 
+db.knex.schema.hasTable('parkingSpots').then(function (exists) {
+  if (!exists) {
+    db.knex.schema.createTable('parkingSpots', function (user) {
+     parking.increments('id').primary();
+     parking.number('location');
+     parking.number('timestamp');
+   }).then(function (table) {
+     console.log('Created Table', table);
+   });
+  }
+});
+
 module.exports = db;
 
 // Status;
